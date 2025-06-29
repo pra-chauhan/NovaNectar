@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useEmployee } from '../../context.jsx/EmployeeContext'; // adjust path if needed
 
-const AddEditEmployeeModal = ({ isOpen, onClose, onSave, initialData }) => {
+const AddEditEmployeeModal = ({ isOpen, onClose, initialData }) => {
+    const { addEmployee, updateEmployee } = useEmployee();
+
     const [formData, setFormData] = useState({
         fullName: '',
         employeeId: '',
@@ -57,7 +60,11 @@ const AddEditEmployeeModal = ({ isOpen, onClose, onSave, initialData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        if (initialData && initialData.id) {
+            updateEmployee(initialData.id, formData);
+        } else {
+            addEmployee(formData);
+        }
         onClose();
     };
 
@@ -129,7 +136,6 @@ const AddEditEmployeeModal = ({ isOpen, onClose, onSave, initialData }) => {
                             />
                         ))}
                     </div>
-
                     <h3 className="font-semibold text-lg text-gray-800">Upload Documents*</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
@@ -154,7 +160,6 @@ const AddEditEmployeeModal = ({ isOpen, onClose, onSave, initialData }) => {
                             </div>
                         ))}
                     </div>
-
                     <div className="flex justify-end gap-3">
                         <button
                             type="button"

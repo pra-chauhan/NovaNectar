@@ -93,23 +93,27 @@ const EmployeeTable = ({ employees }) => {
                         </span>
                       </div>
                     </td>
-                    <td className="p-3 whitespace-nowrap">{emp.name}</td>
-                    <td className="p-3 whitespace-nowrap">{emp.contact}</td>
-                    <td className="p-3 whitespace-nowrap">{emp.role}</td>
+<td className="p-3 whitespace-nowrap">{emp.fullName || emp.name || "-"}</td>
+                    <td className="p-3 whitespace-nowrap">{emp.phone}</td>
+                    <td className="p-3 whitespace-nowrap">{emp.position}</td>
                     <td className="p-3 font-semibold whitespace-nowrap">
                       {emp.attendance || "97%"}
                     </td>
-                    <td className="p-3 whitespace-nowrap">{emp.type}</td>
+                
+                    <td className="p-3 whitespace-nowrap">{emp.type}
+                      Work From Home
+                    </td>
                     <td className="p-3 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          emp.status === "Active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-200 text-gray-700"
-                        }`}
-                      >
-                        {emp.status}
-                      </span>
+                     <span
+  className={`px-2 py-1 rounded-full text-xs font-medium ${
+    (emp.status || "Active") === "Active"
+      ? "bg-green-100 text-green-700"
+      : "bg-gray-200 text-gray-700"
+  }`}
+>
+  {emp.status || "Active"}
+</span>
+
                     </td>
                     <td className="p-3 text-right whitespace-nowrap">
                       <button
