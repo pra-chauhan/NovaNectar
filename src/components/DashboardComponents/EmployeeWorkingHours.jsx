@@ -1,4 +1,40 @@
 import React, { useState } from "react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+
+// Sample data
+const chartData = {
+  Month: [
+    { name: "Week 1", hours: 35 },
+    { name: "Week 2", hours: 38 },
+    { name: "Week 3", hours: 42 },
+    { name: "Week 4", hours: 43 },
+  ],
+  Week: [
+    { name: "Mon", hours: 8 },
+    { name: "Tue", hours: 7.5 },
+    { name: "Wed", hours: 8 },
+    { name: "Thu", hours: 8 },
+    { name: "Fri", hours: 7.5 },
+  ],
+  Day: [
+    { name: "9 AM", hours: 1 },
+    { name: "10 AM", hours: 1 },
+    { name: "11 AM", hours: 1 },
+    { name: "12 PM", hours: 1 },
+    { name: "1 PM", hours: 1 },
+    { name: "2 PM", hours: 1 },
+    { name: "3 PM", hours: 1 },
+    { name: "4 PM", hours: 0.5 },
+  ],
+};
 
 const EmployeeWorkingHours = () => {
   const [viewMode, setViewMode] = useState("Month");
@@ -68,12 +104,28 @@ const EmployeeWorkingHours = () => {
       </div>
 
       {/* Chart Section */}
-      <div className="mt-2 w-full aspect-[3/1.2]">
-        <img
-          src="/your-chart.png"
-          alt="Employee working hours chart"
-          className="w-full h-full object-contain"
-        />
+      <div className="mt-2 w-full h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData[viewMode]}>
+            <defs>
+              <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#6366F1" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="hours"
+              stroke="#6366F1"
+              fillOpacity={1}
+              fill="url(#colorHours)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
