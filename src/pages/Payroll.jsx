@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BarChart3, Menu, Calendar, Search, ChevronDown } from "lucide-react";
+import { Calendar, Search, ChevronDown } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Vecto from "../assets/Vector1.png";
@@ -8,6 +8,8 @@ import Vector from "../assets/Vector2.png";
 import si_money from "../assets/si_money-line.png";
 import Frame457 from "../assets/Frame457.png";
 import frame from "../assets/frame.png";
+import Frame458 from "../assets/Frame458.png";
+import Frame4581 from "../assets/Frame4581.png";
 
 const employees = [
   {
@@ -32,19 +34,31 @@ const employees = [
     net: "₹1,17,220",
     status: "Paid",
   },
-  // Add more entries as needed
+  
 ];
 
 const getStatusClass = (status) => {
+
+ 
+
   return status === "Paid"
     ? "bg-green-50 text-green-600 border border-green-300"
     : "bg-white text-indigo-600 border border-indigo-300";
 };
 
 function Payroll() {
+
+
+
+
   const [selectedDate, setSelectedDate] = useState(new Date("2025-05-03"));
   const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState("All Status");
+   const [active, setActive] = useState(null)
+
+
+
+
 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
@@ -281,14 +295,44 @@ function Payroll() {
           </div>
           <div className="flex gap-5">
             <div className="flex flex-wrap items-center gap-5 max-w-full w-fit">
-              {/* Bar Icon */}
-              <button className=" text-white  rounded-md">
-                <img src={Frame457} alt="Frame457" />
-              </button>
+
+                 {active !== 'one' ? (
+          <button
+            onClick={() => setActive('one')}
+            className=" text-white  rounded-md"
+          >
+          
+           <img src={Frame4581} alt="Frame457" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setActive("two")}
+              className=" text-white  rounded-md"
+          >
+          
+           <img src={Frame457} alt="Frame457" />
+          </button>
+        )}
 
               {/* Menu Icon */}
+              {active !== 'two' ? (
+          <button
+            onClick={() => setActive('two')}
+             className=" text-white  rounded-md"
+          >
+            
+            <img src={Frame458} alt="Frame457" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setActive("one")}
+             className=" text-white  rounded-md"
+          >
+           <img src={frame} alt="Frame457" />
+          </button>
+        )}
               <button className="bg-gray-100 text-gray-700  rounded-md">
-                <img src={frame} alt="Frame457" />
+               
               </button>
 
               {/* Date Picker */}
@@ -337,6 +381,7 @@ function Payroll() {
             </div>
           </div>
         </div>
+          {active === 'one' && (
         <div className="overflow-auto bg-white rounded-xl shadow border border-gray-200">
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-50 text-gray-700 font-semibold">
@@ -353,6 +398,7 @@ function Payroll() {
               </tr>
             </thead>
             <tbody>
+            
               {employees.map((emp, idx) => (
                 <tr key={idx} className="border-t border-gray-100">
                   <td className="px-4 py-3 flex items-center gap-3">
@@ -389,17 +435,23 @@ function Payroll() {
                   </td>
                   <td className="px-4 py-3">
                     <button className="flex items-center gap-1 text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100">
-                      <span className="material-icons text-base">
-                        description
-                      </span>
+                    
                       View
                     </button>
                   </td>
                 </tr>
               ))}
+
             </tbody>
           </table>
         </div>
+          )}
+
+
+           {active === 'one' && (
+
+            <div> chage it</div>
+           )}
       </div>
     </>
   );
