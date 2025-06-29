@@ -3,7 +3,7 @@ import React from "react";
 const KpiCard = ({ label, value, percentage, valueColor }) => {
   return (
     <div
-      className="w-[260px] h-[94px] flex items-center gap-[14px] rounded-[15px] border border-[#8D9096] shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] px-[22px] py-[16px] bg-white shrink-0"
+      className="w-[220px] sm:w-[230px] md:w-[240px] h-[94px] flex items-center gap-[14px] rounded-[15px] border border-[#8D9096] shadow-[0_0_4px_0_rgba(0,0,0,0.25)] px-[16px] py-[16px] bg-white shrink-0"
     >
       {/* Circular Progress Bar */}
       <div className="relative w-[48px] h-[48px]">

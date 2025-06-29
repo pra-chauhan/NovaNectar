@@ -1,5 +1,5 @@
 import React from "react";
-import KpiCard from "./KpiCard";
+import KpiCard from "../../components/DashboardComponents/KpiCard";
 
 const PAORSection = () => {
   const totalEmployees = 30;
@@ -13,7 +13,7 @@ const PAORSection = () => {
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="w-[1117px] h-[94px] flex gap-6">
+      <div className="flex justify-between gap-4 min-w-[920px]">
         {kpis.map((kpi, index) => (
           <KpiCard
             key={index}

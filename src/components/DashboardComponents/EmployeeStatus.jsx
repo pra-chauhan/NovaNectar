@@ -5,39 +5,14 @@ import clsx from "clsx";
 
 const EmployeeStatusCard = () => {
   const navigate = useNavigate();
-
   const filters = ["All", "Active", "On Leave", "Inactive"];
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const employees = [
-    {
-      id: "EMP001",
-      name: "John Doe",
-      role: "Software Engineer",
-      status: "Active",
-      attendance: "Present",
-    },
-    {
-      id: "EMP002",
-      name: "Jane Smith",
-      role: "Product Manager",
-      status: "On Leave",
-      attendance: "N/A",
-    },
-    {
-      id: "EMP003",
-      name: "Rahul Kumar",
-      role: "UI Designer",
-      status: "Inactive",
-      attendance: "Absent",
-    },
-    {
-      id: "EMP004",
-      name: "Sneha Sharma",
-      role: "HR Executive",
-      status: "Active",
-      attendance: "Remote",
-    },
+    { id: "EMP001", name: "John Doe", role: "Software Engineer", status: "Active", attendance: "Present" },
+    { id: "EMP002", name: "Jane Smith", role: "Product Manager", status: "On Leave", attendance: "N/A" },
+    { id: "EMP003", name: "Rahul Kumar", role: "UI Designer", status: "Inactive", attendance: "Absent" },
+    { id: "EMP004", name: "Sneha Sharma", role: "HR Executive", status: "Active", attendance: "Remote" },
   ];
 
   const filteredEmployees =
@@ -46,10 +21,10 @@ const EmployeeStatusCard = () => {
       : employees.filter((emp) => emp.status === selectedFilter);
 
   return (
-    <div className="w-full md:w-[736px] h-[357px] border border-[#8D9096] rounded-[16px] px-[26px] py-[24px] bg-white shadow-md flex flex-col gap-[24px] overflow-x-auto">
+    <div className="w-full rounded-2xl border border-gray-300 bg-white p-4 shadow-sm flex flex-col gap-6">
       {/* Header + Filters */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <h2 className="text-lg font-semibold">Employee Status</h2>
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+        <h2 className="text-lg font-semibold text-gray-800">Employee Status</h2>
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
             <button
@@ -70,7 +45,7 @@ const EmployeeStatusCard = () => {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left min-w-[600px]">
+        <table className="w-full min-w-[600px] text-sm text-left">
           <thead className="bg-gray-100 text-gray-600 font-semibold">
             <tr>
               <th className="py-2 px-4">ID</th>
@@ -82,8 +57,8 @@ const EmployeeStatusCard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp, idx) => (
-              <tr key={idx} className="border-t hover:bg-gray-50">
+            {filteredEmployees.map((emp) => (
+              <tr key={emp.id} className="border-t hover:bg-gray-50">
                 <td className="py-2 px-4 text-blue-600 underline cursor-pointer">
                   {emp.id}
                 </td>
@@ -120,7 +95,7 @@ const EmployeeStatusCard = () => {
       </div>
 
       {/* More Info Button */}
-      <div className="border-t pt-4 mt-2 text-center">
+      <div className="border-t pt-4 text-center">
         <button
           onClick={() => navigate("/employee")}
           className="text-blue-600 hover:underline text-sm font-medium"
