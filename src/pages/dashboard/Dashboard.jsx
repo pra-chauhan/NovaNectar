@@ -9,22 +9,18 @@ import PAORSection from "./PAORSection";
 
 const Dashboard = () => {
   return (
-    <MainLayout>
-      <div className="p-4 md:p-6 space-y-6">
-        <DashboardButtonSection />
-        <PAORSection />
-
-        {/* Working Hours + Total Employees - Responsive grid */}
-        <div className="flex flex-col lg:flex-row gap-4">
-          <EmployeeWorkingHours />
-          <TotalEmployees />
-        </div>
-        <div className="flex flex-col xl:flex-row gap-4">
+    <div className="p-4 md:p-6 space-y-6">
+      <DashboardButtonSection />
+      <PAORSection />
+      <div className="flex flex-col lg:flex-row gap-4">
+        <EmployeeWorkingHours />
+        <TotalEmployees />
+      </div>
+      <div className="flex flex-col md:flex-row gap-6">
         <EmployeeStatus />
         <EventsMeetings />
-        </div>
       </div>
-    </MainLayout>
+    </div>
   );
 };
 

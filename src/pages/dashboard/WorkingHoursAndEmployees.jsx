@@ -1,6 +1,6 @@
 import React from "react";
-import EmployeeWorkingHours from "./EmployeeWorkingHours";
-import TotalEmployees from "./TotalEmployees";
+import EmployeeWorkingHours from "@/EmployeeWorkingHours";
+import TotalEmployees from "@/TotalEmployees";
 
 const WorkingHoursAndEmployees = () => {
   return (

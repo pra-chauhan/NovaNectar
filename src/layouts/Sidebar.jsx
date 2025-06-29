@@ -30,19 +30,20 @@ const Sidebar = ({ isOpen, onClose }) => {
         onClick={onClose}
       />
 
-      {/* Sidebar itself */}
+      {/* Sidebar */}
       <div
         className={`
           fixed top-0 left-0 md:static z-50
           bg-white h-screen w-[259px]
-          border-r border-gray-300
-          p-6 flex flex-col justify-between
+          border-[2px] border-[#8D9096]
+          pt-[16px] pb-[16px] px-[24px]
+          flex flex-col justify-between
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:flex
         `}
       >
-        {/* Top logo + close button */}
+        {/* Header */}
         <div>
           <div className="flex justify-between items-center mb-6">
             <div className="text-xl font-bold text-blue-600">
@@ -55,7 +56,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
           <div className="text-xs text-gray-500 mb-6">Private Limited</div>
 
-          {/* Navigation links */}
+          {/* Nav */}
           <nav className="space-y-1">
             {menuItems.map((item, index) => (
               <NavLink
@@ -76,7 +77,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </nav>
         </div>
 
-        {/* Logout button */}
+        {/* Logout */}
         <div className="pt-6">
           <button className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition">
             <FiLogOut />
