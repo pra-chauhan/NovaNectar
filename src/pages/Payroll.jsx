@@ -54,7 +54,7 @@ function Payroll() {
   const [selectedDate, setSelectedDate] = useState(new Date("2025-05-03"));
   const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState("All Status");
-   const [active, setActive] = useState(null)
+   const [active, setActive] = useState("one")
 
 
 
@@ -448,9 +448,10 @@ function Payroll() {
           )}
 
 
-           {active === 'one' && (
+           {active === 'two' && (
 
-            <div> chage it</div>
+            <div>hello tow</div>
+           
            )}
       </div>
     </>
