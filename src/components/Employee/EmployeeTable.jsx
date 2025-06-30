@@ -118,9 +118,8 @@ const EmployeeTable = ({ employees }) => {
                     <td className="p-3 text-right whitespace-nowrap">
                       <button
                         onClick={() =>
-                          navigate(`/employees/${emp.id}`, {
-                            state: { employee: emp }
-                          })
+                         navigate(`/employees/${emp.id}`)
+
                         }
                       >
                         <EllipsisVertical

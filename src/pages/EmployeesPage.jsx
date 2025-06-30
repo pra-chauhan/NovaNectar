@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import AddEmployeeModal from '../components/Employee/AddEmployeeModal';
 import EmployeeTable from '../components/Employee/EmployeeTable';
-import { useEmployee } from '../context.jsx/EmployeeContext';
+import { useEmployees } from '../context.jsx/EmployeeContext';
 
 const EmployeesPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-const { employees, addEmployee } = useEmployee(); // ✅ Use global context
+const { employees, addEmployee } = useEmployees(); // ✅ Use global context
 
 // Handler to add a new employee
 const handleAddEmployee = (employee) => {

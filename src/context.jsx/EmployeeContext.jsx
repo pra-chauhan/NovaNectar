@@ -1,33 +1,62 @@
-import { createContext, useContext, useEffect, useState } from "react";
+// context.jsx/EmployeeContext.jsx
+
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const EmployeeContext = createContext();
 
+export const useEmployees = () => useContext(EmployeeContext);
+
 export const EmployeeProvider = ({ children }) => {
     const [employees, setEmployees] = useState(() => {
-        const stored = localStorage.getItem('employees');
-        return stored ? JSON.parse(stored) : [];
+        try {
+            const storedEmployees = localStorage.getItem("employees");
+            return storedEmployees ? JSON.parse(storedEmployees) : [];
+        } catch (error) {
+            console.error("Error parsing employees from localStorage:", error);
+            return [];
+        }
     });
 
-    // Persist to localStorage whenever employees change
+    // Persist employees to localStorage whenever employees state changes
     useEffect(() => {
-        localStorage.setItem('employees', JSON.stringify(employees));
+        try {
+            localStorage.setItem("employees", JSON.stringify(employees));
+        } catch (error) {
+            console.error("Error saving employees to localStorage:", error);
+        }
     }, [employees]);
 
     const addEmployee = (employee) => {
-        setEmployees(prev => [...prev, { ...employee, id: Date.now() }]);
+        setEmployees((prev) => [...prev, employee]);
     };
 
-    const updateEmployee = (id, updatedEmployee) => {
-        setEmployees(prev =>
-            prev.map(emp => (emp.id === id ? { ...updatedEmployee, id } : emp))
+    const updateEmployee = (updatedEmployee) => {
+        setEmployees((prev) =>
+            prev.map((emp) => (emp.id === updatedEmployee.id ? updatedEmployee : emp))
         );
     };
 
+   const updateEmployeePerformance = (employeeId, performanceData) => {
+    setEmployees(prev =>
+        prev.map(emp =>
+            emp.id === employeeId
+                ? { ...emp, performance: { ...performanceData, lastUpdated: new Date().toISOString() } }
+                : emp
+        )
+    );
+};
+
+
     return (
-        <EmployeeContext.Provider value={{ employees, addEmployee, updateEmployee }}>
+        <EmployeeContext.Provider
+            value={{
+                employees,
+                addEmployee,
+                updateEmployee,
+                updateEmployeePerformance,
+            }}
+        >
             {children}
         </EmployeeContext.Provider>
     );
 };
-
-export const useEmployee = () => useContext(EmployeeContext);
