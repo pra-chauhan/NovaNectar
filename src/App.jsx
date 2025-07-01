@@ -8,7 +8,6 @@ import Sidebar from "./layouts/Sidebar";
 import Topbar from "./layouts/Topbar";
 
 // Pages
-import Dashboard from "./pages/dashboard/Dashboard";
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeProfile from "./components/Employee/EmployeeProfile";
 import PerformancePage from "./pages/PerformancePage";
@@ -23,13 +22,12 @@ function App() {
         <div className="flex-1">
           <Topbar />
           <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/employee" element={<EmployeesPage />} />
             <Route path="/employees/:id" element={<EmployeeProfile />} />
             <Route path="/performance" element={<PerformancePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/payroll" element={<Payroll />} /> 
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<LoginPage />} />
           </Routes>
         </div>
       </div>
