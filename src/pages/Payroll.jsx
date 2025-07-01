@@ -542,7 +542,7 @@ const paginate = (pageNum) => {
                       <button
                        onClick={() => setSelectedEmployee(emp)}
                        className="flex items-center gap-1 text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100">
-                        View
+                       <FiFileText size={16}/> View
                       </button>
                     </td>
                   </tr>
