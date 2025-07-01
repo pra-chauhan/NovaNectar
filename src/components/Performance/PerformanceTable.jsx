@@ -34,12 +34,12 @@ const PerformanceTable = ({ employees = [], onEvaluate, searchTerm = "", sortOpt
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedEmployees.length > 0 ? (
-                        sortedEmployees.map((emp) => (
-                            <tr
-                                key={emp.id}
-                                className="border-t border-[rgba(207,212,223,1)] hover:bg-gray-50"
-                            >
+                     {sortedEmployees.length > 0 ? (
+        sortedEmployees.map((emp) => (
+            <tr
+                key={emp.id || emp.employeeId || emp.email || emp.phone}
+                className="border-t border-[rgba(207,212,223,1)] hover:bg-gray-50"
+            >
                                 <td className="p-3">
                                     <div className="flex flex-col">
                                         <span className="font-medium">{emp.fullName || "N/A"}</span>

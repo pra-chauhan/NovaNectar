@@ -1,7 +1,7 @@
 import React from "react";
 
-const PerformanceCard = ({ employee, onEvaluate }) => {
-    const { fullName, position, performance } = employee;
+const PerformanceCard = ({ employees, onEvaluate }) => {
+    const { fullName, position, performance } = employees;
 
     const grade =
         performance?.average >= 4
@@ -80,7 +80,7 @@ const PerformanceCard = ({ employee, onEvaluate }) => {
 
             {/* Evaluate Button */}
             <button
-                onClick={() => onEvaluate(employee)}
+                onClick={() => onEvaluate(employees)}
                 className="w-full py-1.5 rounded bg-[#7B61FF] text-white text-sm hover:bg-[#644bd4] transition"
             >
                 {performance ? "Re-Evaluate" : "Evaluate"}

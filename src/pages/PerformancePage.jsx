@@ -112,9 +112,15 @@ const PerformancePage = () => {
             >
                 {view === "table" ? (
                     <PerformanceTable employees={filteredEmployees} onEvaluate={handleEvaluate} />
-                ) : (
-                    <PerformanceCardView employees={filteredEmployees} onEvaluate={handleEvaluate} />
-                )}
+                ) : employees.map(emp => (
+  <PerformanceCardView 
+    key={emp.id || emp.employeeId || emp.email} 
+    employees={emp} 
+    // eslint-disable-next-line no-undef
+    onEvaluate={handleEvaluate} 
+  />
+))
+}
             </div>
 
             {/* Performance Modal */}

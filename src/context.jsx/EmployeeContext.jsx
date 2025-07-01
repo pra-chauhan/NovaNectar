@@ -26,9 +26,11 @@ export const EmployeeProvider = ({ children }) => {
         }
     }, [employees]);
 
-    const addEmployee = (employee) => {
-        setEmployees((prev) => [...prev, employee]);
-    };
+   const addEmployee = (employee) => {
+    const newEmployee = { ...employee, id: crypto.randomUUID() };
+    setEmployees((prev) => [...prev, newEmployee]);
+};
+
 
     const updateEmployee = (updatedEmployee) => {
         setEmployees((prev) =>
