@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import logoimg from "../assets/logo.png";
 
 export default function LoginPage() {
   const [selectedRole, setSelectedRole] = useState("Employee");
@@ -7,43 +8,36 @@ export default function LoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // TODO: Add your auth logic here.
     console.log(`Logging in as ${selectedRole} with`, { email, password });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-xl border border-gray-200 shadow p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center  ">
+      <div className="w-full max-w-5xl  rounded-6xl  shadow-lg p-10 space-y-6">
+        {/* Logo and Heading */}
         <div className="flex flex-col items-center">
-          {/* Company Logo */}
-          <img
-            src="/your-logo.png" // Replace with your logo path
-            alt="NovaNectar Logo"
-            className="w-16 h-16 mb-4"
-          />
-
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">
+          <img src={logoimg} alt="NovaNectar Logo" className="w-24 h-24 mb-4" />
+          <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">
             Welcome to Nova<span className="text-blue-600">Nectar</span> HR Portal
           </h1>
-          <p className="text-gray-500 text-sm">Please select your role to continue</p>
+          <p className="text-gray-500 text-base text-center">Please select your role to continue</p>
         </div>
 
         {/* Roles */}
-        <div className="flex justify-center gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {["Employee", "HR", "Admin"].map((role) => (
             <button
               key={role}
               onClick={() => setSelectedRole(role)}
-              className={`flex flex-col items-center px-6 py-4 rounded-lg border ${
-                selectedRole === role ? "bg-indigo-50 border-indigo-600" : "border-gray-300"
+              className={`flex flex-col items-center px-8 py-6 rounded-xl border transition ${
+                selectedRole === role ? "bg-indigo-50 border-indigo-600" : "border-gray-300 hover:bg-gray-50"
               }`}
             >
-              <div className="w-8 h-8 mb-1 bg-gray-200 rounded-full flex items-center justify-center">
-                {/* You can replace this with an icon */}
+              <div className="w-12 h-12 mb-2 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
                 👤
               </div>
-              <span className="font-medium">{role}</span>
-              <span className="text-xs text-gray-500 text-center mt-1">
+              <span className="font-semibold text-lg">{role}</span>
+              <span className="text-xs text-gray-500 text-center mt-1 px-2">
                 {role === "Employee"
                   ? "View attendance, payslips, and leave requests"
                   : "Manage teams, payroll, and performance"}
@@ -53,8 +47,8 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <h2 className="text-lg font-semibold text-center text-gray-800">
+        <form onSubmit={handleLogin} className="space-y-5 max-w-xl mx-auto">
+          <h2 className="text-xl sm:text-2xl font-semibold text-center text-gray-800">
             Login as {selectedRole}
           </h2>
           <p className="text-center text-sm text-gray-500">
@@ -66,7 +60,7 @@ export default function LoginPage() {
             <input
               type="email"
               required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring focus:ring-indigo-100 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring focus:ring-indigo-100 outline-none"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -83,7 +77,7 @@ export default function LoginPage() {
             <input
               type="password"
               required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring focus:ring-indigo-100 outline-none"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring focus:ring-indigo-100 outline-none"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -93,7 +87,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3 text-sm">
+          <div className="flex flex-wrap items-center gap-4 text-sm">
             <label className="flex items-center space-x-1">
               <input type="checkbox" className="accent-indigo-600" />
               <span>Remember me</span>
@@ -106,7 +100,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className="w-full py-2 rounded bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition"
+            className="w-full py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
           >
             Login as {selectedRole}
           </button>

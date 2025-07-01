@@ -1,13 +1,8 @@
 import React from "react";
 import { FiLogOut } from "react-icons/fi";
 import { MdDashboard, MdOutlineSettings } from "react-icons/md";
-import {
-  FaUserTie,
-  FaMoneyCheckAlt,
-  FaChartLine,
-  FaCalendarCheck,
-} from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { FaUserTie, FaMoneyCheckAlt, FaChartLine, FaCalendarCheck } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 
 const menuItems = [
@@ -20,6 +15,18 @@ const menuItems = [
 ];
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear session/local storage or context-based authentication here
+    localStorage.removeItem("token");
+    sessionStorage.clear();
+    // Optionally clear user context
+    // setUser(null);
+
+    navigate("/login");
+  };
+
   return (
     <>
       {/* Overlay for mobile */}
@@ -56,7 +63,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
           <div className="text-xs text-gray-500 mb-6">Private Limited</div>
 
-          {/* Nav */}
+          {/* Navigation */}
           <nav className="space-y-1">
             {menuItems.map((item, index) => (
               <NavLink
@@ -77,9 +84,12 @@ const Sidebar = ({ isOpen, onClose }) => {
           </nav>
         </div>
 
-        {/* Logout */}
+        {/* Logout Button */}
         <div className="pt-6">
-          <button className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-red-600 transition"
+          >
             <FiLogOut />
             Logout
           </button>

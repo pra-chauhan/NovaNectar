@@ -5,7 +5,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Topbar from "./layouts/Topbar";
 import EmployeeProfile from "./components/Employee/EmployeeProfile";
 import PerformancePage from "./pages/PerformancePage";
-// import other pages similarly
+import LoginPage from './pages/LoginPage';
+
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
             <Route path="/Dashboard" element={<Dashboard/>}/>
        <Route path="/employees/:id" element={<EmployeeProfile />} />
         <Route path="/performance" element={<PerformancePage/>} />
+                        <Route path="/login" element={<LoginPage />} />
+
+      
             {/* Add other routes similarly */}
           </Routes>
         </div>
