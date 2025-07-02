@@ -9,12 +9,12 @@ import Topbar from "./layouts/Topbar";
 
 // Pages
 import EmployeesPage from "./pages/EmployeesPage";
-import EmployeeProfile from "./components/Employee/EmployeeProfile";
+import EmployeeProfile from "./components/Employee/EmployeeProfileHR";
 import PerformancePage from "./pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
 import Payroll from "./pages/Payroll";
 import AttendancePage from "./pages/Attendance";
-
+import EmployeeProfileEmployee from "./components/Employee/EmployeeProfileEmployee";
 // Wrapper to handle conditional layout
 function AppContent() {
   const location = useLocation();
@@ -31,6 +31,8 @@ function AppContent() {
         {!hideLayout && <Topbar />}
         <div className="flex-1">
           <Routes>
+            <Route path="/employee/profile/:id" element={<EmployeeProfileEmployee />} />
+
             <Route path="/attendance" element={<AttendancePage />} />
             <Route path="/employee" element={<EmployeesPage />} />
             <Route path="/employees/:id" element={<EmployeeProfile />} />
