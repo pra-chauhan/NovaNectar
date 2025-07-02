@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { BarChart2, List } from "lucide-react";
-import { useEmployees } from "../context.jsx/EmployeeContext";
+import { useEmployee } from "../context.jsx/EmployeeContext";
 import PerformanceTable from "../components/Performance/PerformanceTable";
 import PerformanceCardView from "../components/Performance/EmployeePerformanceCards";
 import PerformanceModal from "../components/Performance/EvaluateModal";
 
 const PerformancePage = () => {
-    const { employees, updateEmployeePerformance } = useEmployees();
+    const { employees, updateEmployeePerformance } = useEmployee();
     const [showTable, setShowTable] = useState(false);
     const [view, setView] = useState("table");
     const [search, setSearch] = useState("");

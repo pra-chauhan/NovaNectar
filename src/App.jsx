@@ -14,6 +14,9 @@ import PerformancePage from "./pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
 import Payroll from "./pages/Payroll";
 import AttendancePage from "./pages/Attendance";
+import Settings from "./pages/Settings";
+import Dashboard from "./pages/Dashboard";
+import MainLayout from "./layouts/MainLayout";
 
 // Wrapper to handle conditional layout
 function AppContent() {
@@ -31,6 +34,14 @@ function AppContent() {
         {!hideLayout && <Topbar />}
         <div className="flex-1">
           <Routes>
+            <Route
+          path="/"
+          element={
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          }
+        />
             <Route path="/attendance" element={<AttendancePage />} />
             <Route path="/employee" element={<EmployeesPage />} />
             <Route path="/employees/:id" element={<EmployeeProfile />} />
@@ -38,6 +49,10 @@ function AppContent() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/payroll" element={<Payroll />} />
             <Route path="/" element={<LoginPage />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+
+
           </Routes>
         </div>
       </div>

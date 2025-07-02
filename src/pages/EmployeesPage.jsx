@@ -1,36 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddEmployeeModal from '../components/Employee/AddEmployeeModal';
 import EmployeeTable from '../components/Employee/EmployeeTable';
-import { useEmployees } from '../context.jsx/EmployeeContext';
 
 const EmployeesPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-const { employees, addEmployee } = useEmployees(); // ✅ Use global context
+    const [employees, setEmployees] = useState([]);
 
-// Handler to add a new employee
-const handleAddEmployee = (employee) => {
-    const newEmployee = {
-        id: Date.now(),
-        name: employee.fullName,
-        fullName: employee.fullName,
-        contact: employee.phone,
-        phone: employee.phone,
-        role: employee.position,
-        position: employee.position,
-        attendance: "97%",
-        type: "Work from office",
-        status: "Active", // ✅ Ensures status always exists
-        email: employee.email,
-        joiningDate: employee.joiningDate,
-        emergencyContact: employee.emergencyContact,
-        address: employee.address,
-        bio: employee.bio,
-        documents: employee.documents, // to store evaluated performance later
+    // Load from localStorage on mount
+    useEffect(() => {
+        const storedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
+        setEmployees(storedEmployees);
+    }, []);
+
+    // Save to localStorage when employees change
+    useEffect(() => {
+        localStorage.setItem('employees', JSON.stringify(employees));
+    }, [employees]);
+
+    const handleAddEmployee = (employee) => {
+        const newEmployee = {
+            id: Date.now(),
+            name: employee.fullName,
+            contact: employee.phone,
+            role: employee.position,
+            attendance: "97%",
+            type: "Work from office",
+            status: "Active",
+            email: employee.email,
+            joiningDate: employee.joiningDate,
+            emergencyContact: employee.emergencyContact,
+            address: employee.address,
+            bio: employee.bio,
+            documents: employee.documents,
+            fullName: employee.fullName,
+            phone: employee.phone,
+            position: employee.position,
+        };
+        setEmployees(prev => [...prev, newEmployee]);
+        setIsModalOpen(false);
     };
-
-    addEmployee(newEmployee); // ✅ Adds globally
-    setIsModalOpen(false);
-};
 
     const handleExport = () => {
         const dataStr = JSON.stringify(employees, null, 2);

@@ -11,7 +11,7 @@ const menuItems = [
   { label: "Attendance", icon: <FaCalendarCheck />, path: "/attendance" },
   { label: "Payroll", icon: <FaMoneyCheckAlt />, path: "/payroll" },
   { label: "Performance", icon: <FaChartLine />, path: "/performance" },
-  { label: "Setting", icon: <MdOutlineSettings />, path: "/setting" },
+  { label: "Setting", icon: <MdOutlineSettings />, path: "/settings" },
 ];
 
 const Sidebar = ({ isOpen, onClose }) => {

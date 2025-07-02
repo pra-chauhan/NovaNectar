@@ -1,11 +1,11 @@
 import React  from "react";
 import { useParams } from "react-router-dom";
 import { Download, Edit } from "lucide-react";
-import { useEmployees } from "../../context.jsx/EmployeeContext";
+import { useEmployee } from "../../context.jsx/EmployeeContext";
 
 const EmployeeProfile = () => {
   const { id } = useParams();
-const { employees } = useEmployees();
+const { employees } = useEmployee();
 const employee = employees.find((e) => String(e.id) === id);
 
   const defaultAttendance = {
