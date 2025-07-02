@@ -5,7 +5,7 @@ import {
   FiSearch,
   FiPlus,
 } from "react-icons/fi";
-import LeaveRequestModal from "../components/Attendance/LeaveRequestModal";
+import LeaveRequestModal from "../components/LeaveRequestModal";
 
 
 const AttendancePage = () => {
