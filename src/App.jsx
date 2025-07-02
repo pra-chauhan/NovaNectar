@@ -13,7 +13,7 @@ import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeProfile from "./components/Employee/EmployeeProfile";
 import PerformancePage from "./pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
-import Payroll from "./pages/Payroll"; 
+import Payroll from "./pages/Payroll";
 
 function App() {
   return (
@@ -28,8 +28,9 @@ function App() {
             <Route path="/employees/:id" element={<EmployeeProfile />} />
             <Route path="/performance" element={<PerformancePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/payroll" element={<Payroll />} /> 
             <Route path="/" element={<Dashboard />} />
+            <Route path="/payroll" element={<Payroll />} />
+
           </Routes>
         </div>
       </div>
