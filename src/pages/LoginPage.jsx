@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logoimg from "../assets/logo.png";
 
 export default function LoginPage() {
@@ -6,10 +7,21 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
     console.log(`Logging in as ${selectedRole} with`, { email, password });
+
+    if (selectedRole === "Employee") {
+      navigate("/attendance");
+    } else if (selectedRole === "HR") {
+      navigate("/dashboard");
+    } else if (selectedRole === "Admin") {
+      navigate("/payroll");
+    }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center  ">
