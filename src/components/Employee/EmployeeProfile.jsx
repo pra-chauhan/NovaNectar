@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React  from "react";
 import { useParams } from "react-router-dom";
 import { Download, Edit } from "lucide-react";
+import { useEmployees } from "../../context.jsx/EmployeeContext";
 
 const EmployeeProfile = () => {
   const { id } = useParams();
-  const [employee, setEmployee] = useState(null);
-
-  useEffect(() => {
-    const storedEmployees = JSON.parse(localStorage.getItem("employees")) || [];
-    const emp = storedEmployees.find((e) => e.id.toString() === id);
-    setEmployee(emp);
-  }, [id]);
+const { employees } = useEmployees();
+const employee = employees.find((e) => String(e.id) === id);
 
   const defaultAttendance = {
     present: 22,

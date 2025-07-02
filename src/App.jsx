@@ -1,54 +1,40 @@
 // src/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import EmployeesPage from './pages/EmployeesPage';
-import MainLayout from './layouts/MainLayout';
 
-const App = () => {
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// Layouts
+import Sidebar from "./layouts/Sidebar";
+import Topbar from "./layouts/Topbar";
+
+// Pages
+import Dashboard from "./pages/dashboard/Dashboard";
+import EmployeesPage from "./pages/EmployeesPage";
+import EmployeeProfile from "./components/Employee/EmployeeProfile";
+import PerformancePage from "./pages/PerformancePage";
+import LoginPage from "./pages/LoginPage";
+import Payroll from "./pages/Payroll"; 
+
+function App() {
   return (
     <Router>
-      <Routes>
-        {/* Redirect root to /dashboard */}
-        <Route
-          path="/"
-          element={
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
-          }
-        />
-
-        <Route
-          path="/employee"
-          element={
-            <MainLayout>
-              <EmployeesPage />
-            </MainLayout>
-          }
-        />
-
-        {/* Optional: 404 Page */}
-        <Route
-          path="*"
-          element={
-            <MainLayout>
-              <div className="text-center text-red-500 text-xl p-10">404 - Page Not Found</div>
-            </MainLayout>
-          }
-        />
-      </Routes>
+      <div className="flex">
+        <Sidebar />
+        <div className="flex-1">
+          <Topbar />
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/employee" element={<EmployeesPage />} />
+            <Route path="/employees/:id" element={<EmployeeProfile />} />
+            <Route path="/performance" element={<PerformancePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/payroll" element={<Payroll />} /> 
+            <Route path="/" element={<Dashboard />} />
+          </Routes>
+        </div>
+      </div>
     </Router>
   );
-};
+}
 
 export default App;
