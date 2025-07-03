@@ -1,7 +1,52 @@
 import React, { useState } from "react";
 import Toggle from "../componant/Toggle";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 function Settings() {
+  const [eventTypes, setEventTypes] = useState([
+    { id: 1, name: "Team Meeting", notify: false, visible: false },
+    { id: 2, name: "1:1 Meeting", notify: false, visible: false },
+    { id: 3, name: "Training Session", notify: false, visible: false },
+    { id: 4, name: "External Event", notify: false, visible: false },
+  ]);
+
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [newType, setNewType] = useState({
+    name: '',
+    carryForward: false,
+    requireApproval: false
+  });
+
+  const toggleField = (id, field) => {
+    setEventTypes((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, [field]: !e[field] } : e))
+    );
+  };
+
+  const deleteType = (id) => {
+    if (confirm("Are you sure to delete this event type?")) {
+      setEventTypes((prev) => prev.filter((e) => e.id !== id));
+    }
+  };
+
+
+   const handleAddType = () => {
+    if (!newType.name.trim()) return alert("Please enter a name");
+
+    const newEvent = {
+      id: Date.now(),
+      name: newType.name,
+      notify: newType.carryForward,
+      visible: newType.requireApproval
+    };
+    setEventTypes(prev => [...prev, newEvent]);
+    setNewType({ name: '', carryForward: false, requireApproval: false });
+    setShowModal(false);
+  };
+
   const performance = [
     "Task Completion Rate",
     "Quality Score",
@@ -10,11 +55,48 @@ function Settings() {
     "Team Collaboration",
     "Innovation & Creativity",
   ];
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  const roles = [
+    {
+      role: "Super Admin",
+      description: "Full access",
+    },
+    {
+      role: "HR Manager",
+      description: "Employee and payroll management",
+    },
+    {
+      role: "Department Manager",
+      description: "Team management and reporting",
+    },
+    {
+      role: "Employee",
+      description: "Self-service access only",
+    },
+  ];
+
+  const handleConfigureClick = (role) => {
+    setSelectedRole(role);
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+    setSelectedRole(null);
+  };
 
   const [activeTab, setActiveTab] = useState("General");
   const [emailOn, setEmailOn] = useState(true);
   const [smsOn, setSmsOn] = useState(true);
   const [iDs, setIDs] = useState(false);
+  const [allow, setAllow] = useState(false);
+  const [holiday, setHoliday] = useState(false);
+  const [weeks, setWeeks] = useState(false);
+  const [autoPayslip, setAutPayslip] = useState(false);
+  const [emailPayslip, setEmailPayslip] = useState(false);
+  const [twoFactor, setTwoFactor] = useState(false);
 
   const [companyName, setCompanyName] = useState("Novanectar Pvt Limited");
   const [companyEmail, setCompanyEmail] = useState("hr@novanectar.com");
@@ -38,6 +120,13 @@ function Settings() {
     Thursday: false,
     Friday: false,
     Saturday: true,
+  });
+
+  const [activeBank, setActiveBank] = useState({
+    "Bank Transfer (NEFT/RTGS)": false,
+    "Cheque Payment": false,
+    "UPI Payment": false,
+    "Cash Payment": false,
   });
 
   const [leaveTypes, setLeaveTypes] = useState([
@@ -132,6 +221,13 @@ function Settings() {
     }));
   };
 
+  const togglBank = (bank) => {
+    setActiveBank((prev) => ({
+      ...prev,
+      [bank]: !prev[bank],
+    }));
+  };
+
   const initialPerformanceState = performance.reduce((acc, key) => {
     acc[key] = false;
     return acc;
@@ -164,6 +260,12 @@ function Settings() {
     "Friday",
     "Saturday",
     "Sunday",
+  ];
+  const Bank = [
+    "Bank Transfer (NEFT/RTGS)",
+    "Cheque Payment",
+    "UPI Payment",
+    "Cash Payment",
   ];
 
   const [departments, setDepartments] = useState([
@@ -611,7 +713,9 @@ function Settings() {
                 <h2 className="font-semibold text-xl mb-1">
                   Check-in/Check-out Rules
                 </h2>
-                <p className=" mb-4">Configure timing rules for attendance</p>
+                <p className=" md:mb-10 mb-5">
+                  Configure timing rules for attendance
+                </p>
                 <div className="grid grid-cols-2 gap-5">
                   <div className=" w-full">
                     <label className="text-md  font-medium">
@@ -794,7 +898,7 @@ function Settings() {
         {activeTab === "Leave" && (
           <div className=" md:p-6 space-y-6 text-sm text-gray-700 font-sans">
             {/* Top Grid */}
-            <div className="grid  gap-6">
+            <div className="grid   gap-6">
               {/* Review Cycles */}
               <div className="bg-white p-5 rounded-xl border">
                 <h2 className="font-semibold text-xl mb-1">
@@ -948,7 +1052,6 @@ function Settings() {
                           Carry Forward Allowed
                         </label>
                         <Toggle
-                         
                           isOn={formData.carryForward}
                           onToggle={() =>
                             setFormData({
@@ -1020,82 +1123,116 @@ function Settings() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Bottom Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-white p-5 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">
+                  Carry Forward Rules
+                </h2>
+                <p className=" mb-4">Configure how unused leaves are handled</p>
+                <div className="grid  gap-5">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-semibold text-lg ">
+                        Allow Carry Forward
+                      </span>
+                      <p className="text-gray-500 mb-4">
+                        Allow unused leaves to carry forward to next year
+                      </p>
+                    </div>
+
+                    <Toggle isOn={allow} onToggle={() => setAllow(!allow)} />
+                  </div>
+                  <div className=" w-full">
+                    <label className="text-md  font-medium">
+                      Maximum Carry Forward Days
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="1"
+                    />
+                  </div>
+                  <div className="w-full ">
+                    <label className="text-md  font-medium">
+                      Validity of Carried Leaves
+                    </label>
+                    <div className="flex gap-4">
+                      <input
+                        className="input w-full h-10 rounded-lg px-1  border"
+                        defaultValue="month"
+                      />
+                      <input
+                        className="input w-full h-10 rounded-lg px-1  border"
+                        defaultValue="1"
+                      />
+                    </div>
+                  </div>
+                  <div className=" w-full">
+                    <label className="text-md  font-medium">Cycle Reset</label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="Annually"
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* Weekend Settings */}
               <div className="bg-white md:p-5 p-2 rounded-xl border">
                 <h2 className="font-semibold text-xl mb-1">
-                  Task Scoring System
+                  Leave Rules & Restrictions
                 </h2>
                 <p className=" mb-4 ">
-                  Configure daily task evaluation parameters
+                  Configure leave application rules and restrictions
                 </p>
                 <div>
-                  <div className="grid grid-cols-2 gap-5">
-                    <div className=" w-full">
-                      <label className="text-md  font-medium">
-                        Minimum Score
-                      </label>
-                      <input
-                        className="input w-full h-10 rounded-lg px-1  border"
-                        defaultValue="2"
-                      />
-                    </div>
-                    <div className="w-full g ">
-                      <label className="text-md  font-medium ">
-                        Maximum Score
-                      </label>
-                      <input
-                        className="input w-full h-10 rounded-lg px-1   border"
-                        defaultValue="4"
-                      />
-                    </div>
+                  <div className=" w-full my-6">
+                    <label className="text-md  font-medium">
+                      Maximum Carry Forward Days
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="1"
+                    />
                   </div>
-                  <div className="grid gap-7 my-6">
-                    <div className="w-full  ">
-                      <label className="text-md  font-medium">
-                        Default Scoring Criteria
-                      </label>
-                      <input
-                        className="input w-full h-10 rounded-lg px-1  border"
-                        defaultValue="work of quality"
-                      />
-                    </div>
-                    <div className="flex justify-between items-center ">
+
+                  <div className="w-full my-6 ">
+                    <label className="text-md  font-medium ">
+                      Maximum Consecutive Days
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1   border"
+                      defaultValue="4"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
                       <span className="font-semibold text-lg ">
-                        Enable Employee Self-Review
+                        Block Weekend Applications
                       </span>
-
-                      <Toggle
-                        isOn={autoReview}
-                        onToggle={() => setAutoReview(!autoReview)}
-                      />
+                      <p className="text-gray-500 mb-4">
+                        Don't allow leave applications for weekends
+                      </p>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Bottom Grid */}
-            <div className="bg-white md:p-5 p-2 rounded-xl border">
-              <h2 className="font-semibold text-2xl mb-1">
-                Performance Metrics
-              </h2>
-              <p className=" mb-4 ">Configure key performance indicators</p>
-              <div className="md:p-6">
-                <div className="border-2 border-gray-400 rounded-lg p-4">
-                  <div className="grid md:grid-cols-2 gap-3 gap-x-20">
-                    {performance.map((item) => (
-                      <div
-                        key={item}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-lg font-medium">{item}</span>
-                        <Toggle
-                          onToggle={() => togglePerformance(item)}
-                          isOn={!!activePerformance[item]} // fallback in case state is undefined
-                        />
-                      </div>
-                    ))}
+                    <Toggle isOn={weeks} onToggle={() => setWeeks(!weeks)} />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-semibold text-lg ">
+                        Block Holiday Applications
+                      </span>
+                      <p className="text-gray-500 mb-4">
+                        Don't allow leave applications for holidays
+                      </p>
+                    </div>
+
+                    <Toggle
+                      isOn={holiday}
+                      onToggle={() => setHoliday(!holiday)}
+                    />
                   </div>
                 </div>
               </div>
@@ -1104,7 +1241,7 @@ function Settings() {
             {/* Save Button */}
             <div className="text-right">
               <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full text-sm">
-                Save Attendance Setting
+                Save leave Setting
               </button>
             </div>
           </div>
@@ -1242,6 +1379,572 @@ function Settings() {
               </button>
             </div>
           </div>
+        )}
+
+        {activeTab === "Payroll" && (
+          <div className=" md:p-6 space-y-6 text-sm text-gray-700 font-sans">
+            {/* Top Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Check-in/Check-out Rules */}
+              <div className="bg-white p-5 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">
+                  Default Salary Structure
+                </h2>
+                <p className=" md:mb-10 mb-6">
+                  Configure default salary components
+                </p>
+                <div className="grid grid-cols-2 gap-5">
+                  <div className=" w-full">
+                    <label className="text-md  font-medium">Basic Salary</label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="20"
+                    />
+                  </div>
+                  <div className="w-full ">
+                    <label className="text-md  font-medium">
+                      Deduction (%)
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="20"
+                    />
+                  </div>
+                </div>
+                <div className="w-full my-6 ">
+                  <label className="text-md  font-medium">
+                    Transport Allowance(%)
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="no"
+                  />
+                </div>
+              </div>
+
+              {/* Weekend Settings */}
+              <div className="bg-white md:p-5 p-2 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">Payment Methods</h2>
+                <p className=" mb-4 ">Configure supported payment methods</p>
+                <div className="md:p-6">
+                  <div className="border-2 border-gray-400 rounded-lg p-4">
+                    <div className="grid  gap-3">
+                      {Bank.map((Bank) => (
+                        <div
+                          key={Bank}
+                          className=" flex items-center justify-between"
+                        >
+                          <span className="text-md  font-medium">{Bank}</span>
+
+                          <Toggle
+                            onToggle={() => togglBank(Bank)}
+                            isOn={activeBank[Bank]}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Weekend Settings */}
+              <div className="bg-white md:p-5 p-2 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">
+                  Payroll Processing
+                </h2>
+                <p className=" mb-4 ">
+                  Configure payroll cycle and processing rule
+                </p>
+                <div>
+                  <div className=" w-full my-6">
+                    <label className="text-md  font-medium">
+                      Payroll Lock Date
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="1"
+                    />
+                  </div>
+
+                  <div className="w-full my-6 ">
+                    <label className="text-md  font-medium ">
+                      Salary Payment Date
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1   border"
+                      defaultValue="4"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-semibold text-lg ">
+                        Auto-generate Payslips
+                      </span>
+                      <p className="text-gray-500 mb-4">
+                        Automatically create review forms for each cycle
+                      </p>
+                    </div>
+
+                    <Toggle
+                      isOn={autoPayslip}
+                      onToggle={() => setAutPayslip(!autoPayslip)}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-semibold text-lg ">
+                        Tax & Contribution Settings
+                      </span>
+                      <p className="text-gray-500 mb-4">
+                        Automatically email payslips to employees
+                      </p>
+                    </div>
+
+                    <Toggle
+                      isOn={emailPayslip}
+                      onToggle={() => setEmailPayslip(!emailPayslip)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white p-5 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">
+                  Tax & Contribution Settings
+                </h2>
+                <p className=" mb-4">PF Employer Contribution (%)</p>
+                <div className="grid  gap-5">
+                  <div className="w-full flex gap-5 ">
+                    <div>
+                      <label className="text-md  font-medium">
+                        PF Employee Contribution (%)
+                      </label>
+
+                      <input
+                        className="input w-full h-10 rounded-lg px-1  border"
+                        defaultValue="month"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-md  font-medium">
+                        PF Employer Contribution (%)
+                      </label>
+                      <input
+                        className="input w-full h-10 rounded-lg px-1  border"
+                        defaultValue="1"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full flex gap-5 ">
+                    <div>
+                      <label className="text-md  font-medium">
+                        ESI Employee Contribution (%)
+                      </label>
+
+                      <input
+                        className="input w-full h-10 rounded-lg px-1  border"
+                        defaultValue="month"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-md  font-medium">
+                        Maximum Score
+                      </label>
+                      <input
+                        className="input min-w-full h-10 rounded-lg px-1  border"
+                        defaultValue="1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className=" w-full">
+                    <label className="text-md  font-medium">
+                      Professional Tax (Monthly)
+                    </label>
+                    <input
+                      className="input w-full h-10 rounded-lg px-1  border"
+                      defaultValue="200"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            <div className="text-right">
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full text-sm">
+                Save payroll Setting
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "Security" && (
+          <div className=" md:p-6 space-y-6 text-sm text-gray-700 font-sans">
+            {/* Top Grid */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* authontication*/}
+              <div className="bg-white p-5 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">
+                  Authentication Settings
+                </h2>
+                <p className="  mb-6">
+                  Configure login and authentication requirements
+                </p>
+
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold text-lg ">
+                      Two-Factor Authentication
+                    </span>
+                    <p className="text-gray-500 mb-4">
+                      Require 2FA for all user accounts
+                    </p>
+                  </div>
+
+                  <Toggle
+                    isOn={twoFactor}
+                    onToggle={() => setTwoFactor(!twoFactor)}
+                  />
+                </div>
+
+                <div className="w-full mb-6 ">
+                  <label className="text-md  font-medium">
+                    Session Timeout (minutes)
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="30 min"
+                  />
+                </div>
+
+                <div className="w-full my-6 ">
+                  <label className="text-md  font-medium">
+                    Maximum Login Attempts
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="no"
+                  />
+                </div>
+                <div className="w-full my-6 ">
+                  <label className="text-md  font-medium">
+                    Account Lockout Duration (minutes)
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="no"
+                  />
+                </div>
+              </div>
+
+              {/*  password */}
+              <div className="bg-white p-5 rounded-xl border">
+                <h2 className="font-semibold text-xl mb-1">Password Policy</h2>
+                <p className="  mb-6">
+                  Configure password requirements and reset policies
+                </p>
+
+                <div className="w-full my-6 ">
+                  <label className="text-md  font-medium">
+                    Minimum Password Length
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="30 min"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold text-lg ">
+                      Require Uppercase Letters
+                    </span>
+                    <p className="text-gray-500 mb-4">
+                      Password must contain uppercase letters
+                    </p>
+                  </div>
+
+                  <Toggle
+                    isOn={twoFactor}
+                    onToggle={() => setTwoFactor(!twoFactor)}
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold text-lg ">
+                      Require Numbers
+                    </span>
+                    <p className="text-gray-500 mb-4">
+                      Password must contain numbers
+                    </p>
+                  </div>
+
+                  <Toggle
+                    isOn={twoFactor}
+                    onToggle={() => setTwoFactor(!twoFactor)}
+                  />
+                </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold text-lg ">
+                      Require Special Characters
+                    </span>
+                    <p className="text-gray-500 mb-4">
+                      Password must contain special characters
+                    </p>
+                  </div>
+
+                  <Toggle
+                    isOn={twoFactor}
+                    onToggle={() => setTwoFactor(!twoFactor)}
+                  />
+                </div>
+
+                <div className="w-full mb-6 ">
+                  <label className="text-md  font-medium">
+                    Password Expiry (days)
+                  </label>
+                  <input
+                    className="input w-full h-10 rounded-lg px-1  border"
+                    defaultValue="never"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Grid */}
+            <div className=" mx-auto">
+              <div className="bg-white rounded-xl border p-6 shadow-sm">
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">
+                  Leave Types & Quotas
+                </h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Manage different types of leave and their annual quotas
+                </p>
+
+                <div className="space-y-3">
+                  {roles.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-4 border rounded-md hover:shadow-sm"
+                    >
+                      <div>
+                        <h3 className="font-medium text-gray-800">
+                          {item.role}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {item.description}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleConfigureClick(item.role)}
+                        className="border border-gray-300 rounded px-4 py-1 text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        Configure
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Modal */}
+              {openModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+                  <div className="bg-white w-[400px] p-6 rounded-lg shadow-lg">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        Configure Access - {selectedRole}
+                      </h3>
+                      <button
+                        onClick={handleClose}
+                        className="text-gray-500 text-xl"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      You can define access levels and leave rules for the role:{" "}
+                      <strong>{selectedRole}</strong>
+                    </p>
+                    <button
+                      onClick={handleClose}
+                      className="mt-2 px-4 py-2 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Save Button */}
+            <div className="text-right">
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full text-sm">
+                Save payroll Setting
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "Meetings" && (
+          <div className=" mx-auto p-6 border rounded-2xl">
+            <div className="flex items-start justify-between ">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800 mb-1">
+                  Meeting & Event Settings
+                </h2>
+                <p className="text-md  mb-4">
+                  Manage meeting and event types, notifications, and visibility
+                  settings
+                </p>
+              </div>
+
+              <button 
+              onClick={() => setShowModal(true)}
+               className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-md text-sm">
+                + Add Type
+              </button>
+            </div>
+
+            <div className="bg-white rounded-xl border p-5">
+              <div className=" items-center mb-4">
+                <h3 className="font-semibold text-gray-800 text-lg">
+                  Meeting & Event Types
+                </h3>
+                <p>
+                  Configure different types of meetings and events, their
+                  notification settings, and visibility on employee dashboards.
+                </p>
+              </div>
+
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-gray-600 text-left">
+                    <th className="py-2">Event/Meeting Name</th>
+                    <th className="py-2">Send Notifications</th>
+                    <th className="py-2">Visible on Dashboard</th>
+                    <th className="py-2">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventTypes.map((event) => (
+                    <tr key={event.id} className="border-b">
+                      <td className="py-3">{event.name}</td>
+                      <td>
+                        <label className="inline-flex items-center cursor-pointer">
+                          <Toggle
+                        
+                            isOn={event.notify}
+                            onToggle={() => toggleField(event.id, "notify")}
+                          />
+                          
+                        </label>
+                      </td>
+                      <td>
+                        <label className="inline-flex items-center cursor-pointer">
+                          <Toggle
+                            
+                            isOn={event.visible}
+                            onToggle={() => toggleField(event.id, "visible")}
+                          />
+                        
+                        </label>
+                      </td>
+                      <td className="space-x-2">
+                        <button className="text-black hover:text-blue-800 text-2xl">
+                          <FaRegEdit />
+                        </button>
+                        <button
+                          onClick={() => deleteType(event.id)}
+                          className="text-red-600 hover:text-red-800 text-2xl"
+                        >
+                          <MdDelete />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {eventTypes.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan="4"
+                        className="text-center text-gray-400 py-4"
+                      >
+                        No event types available.
+                      </td>
+                    </tr>
+
+                    
+                  )}
+                </tbody>
+              </table>
+              
+            </div>
+              {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-[400px] rounded-lg p-6 shadow-lg">
+            <h3 className="text-lg font-semibold mb-2">Add New Meeting/Event Type</h3>
+            <p className="text-sm text-gray-500 mb-4">Create a new type of meeting or event for your organization.</p>
+
+            <div className="mb-4">
+              <label className="block text-sm mb-1">Leave Type Name</label>
+              <input
+                type="text"
+                placeholder="eg. Team Meeting, Sick Leave etc"
+                className="w-full border rounded px-3 py-2"
+                value={newType.name}
+                onChange={(e) => setNewType({ ...newType, name: e.target.value })}
+              />
+            </div>
+
+            <div className="flex justify-between items-center mb-3">
+              <span>Carry Forward Allowed</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <Toggle
+                  type="checkbox"
+                  className="sr-only peer"
+                  isOn={newType.carryForward}
+                  onToggle={() =>
+                    setNewType(prev => ({ ...prev, carryForward: !prev.carryForward }))
+                  }
+                />
+                
+              </label>
+            </div>
+
+            <div className="flex justify-between items-center mb-4">
+              <span>Require Approval</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <Toggle
+                  isOn={newType.requireApproval}
+                  onToggle={() =>
+                    setNewType(prev => ({ ...prev, requireApproval: !prev.requireApproval }))
+                  }
+                />
+                
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-3  border  hover:bg-gray-100 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddType}
+                className="bg-indigo-500 text-white px-3  py-1 rounded-xl hover:bg-indigo-600"
+              >
+                Add Type
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+          </div>
+
         )}
       </div>
     </>
