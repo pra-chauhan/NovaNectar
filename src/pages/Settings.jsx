@@ -96,8 +96,11 @@ function Settings() {
   const [weeks, setWeeks] = useState(false);
   const [autoPayslip, setAutPayslip] = useState(false);
   const [emailPayslip, setEmailPayslip] = useState(false);
+  const [requireSpecial, setRequireSpecial] = useState(false);
+  const [requireNumber, setRequireNumber] = useState(false);
   const [twoFactor, setTwoFactor] = useState(false);
-
+  const [require, setRequire] = useState(false);
+  
   const [companyName, setCompanyName] = useState("Novanectar Pvt Limited");
   const [companyEmail, setCompanyEmail] = useState("hr@novanectar.com");
   const [companyAddress, setCompanyAddress] = useState(
@@ -1668,8 +1671,8 @@ function Settings() {
                   </div>
 
                   <Toggle
-                    isOn={twoFactor}
-                    onToggle={() => setTwoFactor(!twoFactor)}
+                    isOn={require}
+                    onToggle={() => setRequire(!require)}
                   />
                 </div>
                 <div className="flex justify-between items-center">
@@ -1683,8 +1686,8 @@ function Settings() {
                   </div>
 
                   <Toggle
-                    isOn={twoFactor}
-                    onToggle={() => setTwoFactor(!twoFactor)}
+                    isOn={requireNumber}
+                    onToggle={() => setRequireNumber(!requireNumber)}
                   />
                 </div>
                 <div className="flex justify-between items-center">
@@ -1698,8 +1701,8 @@ function Settings() {
                   </div>
 
                   <Toggle
-                    isOn={twoFactor}
-                    onToggle={() => setTwoFactor(!twoFactor)}
+                    isOn={requireSpecial}
+                    onToggle={() => setRequireSpecial(!requireSpecial)}
                   />
                 </div>
 

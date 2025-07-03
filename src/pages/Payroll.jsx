@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import html2pdf from "html2pdf.js";
+// import html2pdf from "html2pdf.js";
 import { Calendar, Search, ChevronDown, Printer } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,6 +7,13 @@ import { FiFileText, FiDownload } from "react-icons/fi";
 import Vecto from "../assets/Vector1.png";
 import icon from "../assets/icon-park-outline_left.png";
 import iconPark from "../assets/icon-park-outline_left1.png";
+
+
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+
 
 import jam from "../assets/jam_share.png";
 import Vector from "../assets/Vector2.png";
@@ -50,7 +57,7 @@ const getStatusClass = (status) => {
 };
 
 function Payroll() {
-  const payslipRef = useRef();
+    const payslipRef = useRef(null);
 
   const [selectedDate, setSelectedDate] = useState(new Date("2025-05-03"));
   const [searchQuery, setSearchQuery] = useState("");
@@ -87,44 +94,70 @@ function Payroll() {
   const handleDownloadFromCard = (emp) => {
     setSelectedEmployee(emp);
 
-    // Wait for modal content to render before downloading
+    
     setTimeout(() => {
       handleDownloadPDF(emp);
     }, 500);
   };
 
 
-    const handleDownloadPDF = (selectedEmployee) => {
-    if (!payslipRef.current) return;
+// const handleDownloadPDF = async () => {
+//   const element = payslipRef.current;
+//   if (!element) {
+//     console.warn('Payslip element missing');
+//     return;
+//   }
 
+//   try {
+//     const canvas = await html2canvas(element, {
+//       scale: 4,
+//       backgroundColor: '#fff',
+//       useCORS: true,
+//     });
+//     const imgData = canvas.toDataURL('image/png');
+
+//     const pdf = new jsPDF('p', 'mm', 'a4');
+//     const pdfWidth = pdf.internal.pageSize.getWidth();
+//     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+//     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+//     pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
+//   } catch (error) {
+//     console.error('Failed to generate PDF:', error);
+//   }
+// };
+
+const handleDownloadPDF = async () => {
+  if (!payslipRef.current || !selectedEmployee) {
+    console.error("Payslip element or selected employee is missing");
+    return;
+  }
+
+  try {
     const element = payslipRef.current;
-    const opt = {
-      margin: 0.5,
-      filename: `Payslip-${selectedEmployee.name}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-    };
+    const scale = 3; // increase for better quality
 
-    html2pdf().set(opt).from(element).save();
-  };
-  
+    const canvas = await html2canvas(element, {
+      scale,
+      useCORS: true,
+      backgroundColor: '#fff',
+    });
 
-   const handlePrint = () => {
-    if (!payslipRef.current) return;
-    const content = payslipRef.current.innerHTML;
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head><title>Payslip</title></head>
-        <body>${content}</body>
-      </html>
-    `);
-    win.document.close();
-    win.focus();
-    win.print();
-    win.close();
-  };
+    const imgData = canvas.toDataURL('image/png');
+
+    // Create PDF with pixel units matching canvas dimensions for max clarity
+    const pdf = new jsPDF({
+      unit: 'px',
+      format: [canvas.width, canvas.height],
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
+  } catch (error) {
+    console.error('Failed to generate PDF:', error);
+  }
+};
+
 
 
   return (
@@ -620,7 +653,7 @@ function Payroll() {
         )}
 
         {active === "two" && (
-          <div className=" bg-gray-100 p-6 flex flex-wrap gap-6">
+          <div className=" bg-gray-100 p-6 flex  gap-6">
             {employees.map((emp) => (
               <div
                 key={emp.id}
@@ -712,7 +745,10 @@ function Payroll() {
               onClick={(e) => e.stopPropagation()} // Prevent closing on inner click
             >
               {/* Paste your payslip card here */}
-              <div ref={payslipRef}  className="text-sm text-gray-700 font-sans">
+              <div ref={payslipRef}  className=" payslip-container text-sm text-gray-700 font-sans"   style={{
+    color: '#374151',         
+    backgroundColor: '#fff',  
+  }}>
                 {/* HEADER */}
                 <div className="mb-3">
                   <h1 className="text-lg font-semibold">Employee Payslip</h1>
@@ -860,13 +896,13 @@ function Payroll() {
               </div>
                 <div className="flex justify-between gap-3 mt-4">
                   <button
-                    onClick={handlePrint}
+                   onClick={() => window.print()}
                     className="flex items-center gap-1 px-4 py-2 border border-gray-300 rounded text-gray-700 text-sm hover:bg-gray-50"
                   >
                     Print
                   </button>
                   <button
-                     onClick={() => handleDownloadPDF(selectedEmployee)}
+                    onClick={ handleDownloadPDF}
                     
                     className="flex items-center gap-1 px-4 py-2 border border-indigo-300 text-indigo-600 rounded text-sm hover:bg-indigo-50"
                   >
