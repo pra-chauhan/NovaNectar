@@ -101,7 +101,6 @@ function Payroll() {
   };
 
 
-// const handleDownloadPDF = async () => {
 //   const element = payslipRef.current;
 //   if (!element) {
 //     console.warn('Payslip element missing');
@@ -135,23 +134,36 @@ const handleDownloadPDF = async () => {
 
   try {
     const element = payslipRef.current;
-    const scale = 3; // increase for better quality
 
+    // Get canvas from DOM
     const canvas = await html2canvas(element, {
-      scale,
+      scale: 2,
       useCORS: true,
-      backgroundColor: '#fff',
+      backgroundColor: '#ffffff',
     });
 
     const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
-    // Create PDF with pixel units matching canvas dimensions for max clarity
-    const pdf = new jsPDF({
-      unit: 'px',
-      format: [canvas.width, canvas.height],
-    });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let position = 0;
+
+    // If content is longer than 1 page
+    if (imgHeight > pageHeight) {
+      while (position < imgHeight) {
+        pdf.addImage(imgData, 'PNG', 0, -position, imgWidth, imgHeight);
+        position += pageHeight;
+        if (position < imgHeight) pdf.addPage();
+      }
+    } else {
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    }
+
     pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
   } catch (error) {
     console.error('Failed to generate PDF:', error);
