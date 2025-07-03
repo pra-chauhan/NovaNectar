@@ -14,7 +14,7 @@ export default function LoginPage() {
     console.log(`Logging in as ${selectedRole} with`, { email, password });
 
     if (selectedRole === "Employee") {
-      navigate("/employee");
+      navigate("/employee/profile");
     } else if (selectedRole === "HR") {
       navigate("/dashboard");
     } else if (selectedRole === "Admin") {
