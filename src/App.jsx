@@ -1,20 +1,4 @@
 // src/App.jsx
-<<<<<<< HEAD
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Payroll from './pages/Payroll';
-import Settings from './pages/Settings';
-
-function App() {
-  return (
-    <Router >
-        <Routes>
-            <Route path="/Payroll" element={<Payroll/>} />
-            <Route path="/" element={<Settings/>} />
-
-        </Routes>
-   
-=======
 
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -30,6 +14,7 @@ import EmployeeProfile from "./components/Employee/EmployeeProfile";
 import PerformancePage from "./pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
 import Payroll from "./pages/Payroll"; 
+import Settings from "./pages/Settings"; 
 
 function App() {
   return (
@@ -45,11 +30,11 @@ function App() {
             <Route path="/performance" element={<PerformancePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/payroll" element={<Payroll />} /> 
+            <Route path="/setting" element={<Settings/>} /> 
             <Route path="/" element={<Dashboard />} />
           </Routes>
         </div>
       </div>
->>>>>>> 80cba5373d20ea2643b5d6758c7967f7ad03c732
     </Router>
   );
 }
