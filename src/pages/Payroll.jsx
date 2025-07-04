@@ -512,7 +512,7 @@ const handleDownloadPDF = async () => {
           </div>
         </div>
 
-        <div className="flex justify-between my-10 items-center">
+        <div className="flex justify-between my-10 items-center ">
           <div>
             <p className="text-2xl font-bold">List of Payroll</p>
           </div>
@@ -599,8 +599,9 @@ const handleDownloadPDF = async () => {
           </div>
         </div>
         {active === "one" && (
-          <div className="overflow-auto bg-white rounded-xl shadow border border-gray-200">
-            <table className="min-w-full text-sm text-left">
+          <div className=" bg-white rounded-xl shadow border border-gray-200">
+            <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left ">
               <thead className="bg-gray-50 text-gray-700 font-semibold">
                 <tr>
                   <th className="px-4 py-3">Employees</th>
@@ -661,6 +662,7 @@ const handleDownloadPDF = async () => {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
 
