@@ -48,6 +48,8 @@ function App() {
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/performance" element={<PerformancePage />} />
           <Route path="/payroll" element={<Payroll />} />
+          <Route path ="/settings" element={<Settings />} />
+          <Route path ="/dashboard" element={<Dashboard />} />
         </Routes>
       </LayoutWrapper>
     </Router>
