@@ -116,7 +116,7 @@ const PerformancePage = () => {
   <PerformanceCardView 
     key={emp.id || emp.employeeId || emp.email} 
     employees={emp} 
-    // eslint-disable-next-line no-undef
+     
     onEvaluate={handleEvaluate} 
   />
 ))

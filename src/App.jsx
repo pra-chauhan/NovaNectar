@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
@@ -10,6 +8,7 @@ import Topbar from "./layouts/Topbar";
 // Pages
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeProfile from "./components/Employee/EmployeeProfile";
+import EmployeeProfileEmployee from "./pages/EmployeeProfileEmployee";
 import PerformancePage from "./pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
 import Payroll from "./pages/Payroll";
