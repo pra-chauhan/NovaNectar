@@ -1,5 +1,6 @@
 import { Plus, Settings, ToggleLeft, ToggleRight, TriangleAlert } from "lucide-react";
 import React, { useRef, useState } from "react";
+import BankDetailsModal from "./BankDetailsModal";
 
 const EmployeeSettingsModal = ({ isOpen, onClose }) => {
   const types = ["Preference", "Profile", "Salary", "Registration"];
@@ -45,10 +46,13 @@ const EmployeeSettingsModal = ({ isOpen, onClose }) => {
   // -------Profile---------
   const imgInpRef = useRef()
 
+  // -------Salary---------
+  const [isBankModalOpen, setisBankModalOpen] = useState(false)
+
   // if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-[#F9FAFB] rounded-xl p-6 space-y-4 shadow-lg w-lg md:w-2xl lg:w-4xl xl:w-6xl overflow-y-auto max-h-[90vh]">
         {/* headers */}
         <div className="flex items-center gap-4">
@@ -368,7 +372,7 @@ const EmployeeSettingsModal = ({ isOpen, onClose }) => {
                 {/* add bank btn */}
                 <button
                   type="submit"
-                  onClick={''}
+                  onClick={() => setisBankModalOpen(true)}
                   className="flex items-center gap-2 px-5 py-3 bg-[#6366F1] text-white rounded-xl font-medium hover:bg-[#6365f1f6]"
                 >
                   <Plus size={16} />
@@ -466,6 +470,8 @@ const EmployeeSettingsModal = ({ isOpen, onClose }) => {
             </div>
           )
         }
+
+        <BankDetailsModal isOpen={isBankModalOpen} onClose={() => setisBankModalOpen(false)} />
 
       </div>
     </div>
