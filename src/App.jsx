@@ -7,15 +7,15 @@ import Sidebar from "./layouts/Sidebar";
 import Topbar from "./layouts/Topbar";
 
 // Pages
-import EmployeesPage from "./pages/EmployeesPage";
+import EmployeesPage from "./pages/HR & Admin pages/EmployeesPage";
 import EmployeeProfile from "./components/Employee/EmployeeProfileHR";
-import EmployeeProfileEmployee from "./pages/EmployeeProfileEmployee";
-import PerformancePage from "./pages/PerformancePage";
+import EmployeeProfileEmployee from "./pages/Employee Page/EmployeeProfileEmployee";
+import PerformancePage from "./pages/HR & Admin pages/PerformancePage";
 import LoginPage from "./pages/LoginPage";
-import Payroll from "./pages/Payroll";
-import AttendancePage from "./pages/Attendance";
-import Settings from "./pages/Settings";
-import Dashboard from "./pages/Dashboard";
+//import Payroll from "./pages/HR & Admin pages/Payroll";
+import AttendancePage from "./pages/HR & Admin pages/Attendance";
+import Settings from "./pages/HR & Admin pages/Settings";
+import Dashboard from "./pages/HR & Admin pages/Dashboard";
 import MainLayout from "./layouts/MainLayout";
 
 function LayoutWrapper({ children }) {
@@ -47,7 +47,7 @@ function App() {
           <Route path="/employees/:id" element={<EmployeeProfile />} />
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/performance" element={<PerformancePage />} />
-          <Route path="/payroll" element={<Payroll />} />
+          {/* <Route path="/payroll" element={<Payroll />} /> */}
           <Route path ="/settings" element={<Settings />} />
           <Route path ="/dashboard" element={<Dashboard />} />
         </Routes>

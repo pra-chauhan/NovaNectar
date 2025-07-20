@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { Download, Edit, Plus, ChevronDown, Calendar } from "lucide-react";
-import TopbarEmployee from "../components/EmployeePageComponent/TopbarEmployee";
-import LeaveRequestModal from "../components/EmployeePageComponent/LeaveRequest";
-import NewDocumentPopup from "../components/EmployeePageComponent/NewDocumentPopup";
-import EditPermissionPopup from "../components/EmployeePageComponent/EditPermissionPopup";
+import TopbarEmployee from "../../components/EmployeePageComponent/TopbarEmployee";
+import LeaveRequestModal from "../../components/EmployeePageComponent/LeaveRequest";
+import NewDocumentPopup from "../../components/EmployeePageComponent/NewDocumentPopup";
+import EditPermissionPopup from "../../components/EmployeePageComponent/EditPermissionPopup";
 const GreetingBanner = ({ name }) => {
   const currentTime = new Date();
   const hours = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });

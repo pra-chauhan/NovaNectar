@@ -1,7 +1,7 @@
 import React from "react";
 
 const EditPermissionPopup = ({ isOpen, onClose }) => {
-  if (!isOpen) return null; // <-- This prevents full-screen black background when modal is closed
+  if (!isOpen) return null; 
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-white/30 z-50 flex items-end justify-center sm:items-center px-4">
