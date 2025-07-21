@@ -17,7 +17,11 @@ const MainLayout = ({ children }) => {
         {/* Main Content */}
         <div className="flex flex-col flex-1 h-full w-full overflow-hidden">
           {/* Topbar */}
-          <Topbar onMenuClick={() => setIsSidebarOpen(true)} />
+          <Topbar
+         
+            onMenuClick={() =>{    console.log("Menu clicked");
+            setIsSidebarOpen(prev => !prev)}
+          }/>
 
           {/* Scrollable Content */}
           <main className="flex-1 overflow-y-auto bg-[#F9FAFB] p-4 md:p-6">

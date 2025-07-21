@@ -18,41 +18,60 @@ import Settings from "./pages/HR & Admin pages/Settings";
 import Dashboard from "./pages/HR & Admin pages/Dashboard";
 import MainLayout from "./layouts/MainLayout";
 
-function LayoutWrapper({ children }) {
-  const location = useLocation();
-  const hideLayout = ["/", "/login", "/employee/profile"].includes(location.pathname);
+// function LayoutWrapper({ children }) {
+//   const location = useLocation();
+//   const hideLayout = ["/", "/login", "/employee/profile"].includes(location.pathname);
 
-  return hideLayout ? (
-    children
-  ) : (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1">
-        <Topbar />
-        {children}
-      </div>
-    </div>
-  );
-}
+//   return hideLayout ? (
+//     children
+//   ) : (
+//     <div className="flex">
+//       <Sidebar />
+//       <div className="flex-1">
+//         <Topbar />
+//         {children}
+//       </div>
+//     </div>
+//   );
+// }
+
+
 
 function App() {
   return (
     <Router>
-      <LayoutWrapper>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/employee/profile" element={<EmployeeProfileEmployee />} />
-          <Route path="/employee" element={<EmployeesPage />} />
-          <Route path="/employees/:id" element={<EmployeeProfile />} />
-          <Route path="/attendance" element={<AttendancePage />} />
-          <Route path="/performance" element={<PerformancePage />} />
-          <Route path="/payroll" element={<Payroll />} />
-          <Route path ="/settings" element={<Settings />} />
-          <Route path ="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </LayoutWrapper>
+      <AppRoutes />
     </Router>
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
+  const hideLayout = ["/", "/login", "/employee/profile"].includes(location.pathname);
+
+
+
+
+  return hideLayout ? (
+
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/employee/profile" element={<EmployeeProfileEmployee />} />
+    </Routes>
+  ) : (
+
+    <MainLayout>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/employee" element={<EmployeesPage />} />
+        <Route path="/employees/:id" element={<EmployeeProfile />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/performance" element={<PerformancePage />} />
+        <Route path="/payroll" element={<Payroll />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </MainLayout>
   );
 }
 
