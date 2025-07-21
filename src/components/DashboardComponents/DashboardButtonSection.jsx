@@ -12,7 +12,7 @@ const DashboardButtonSection = () => {
         </span>
         <span className="text-2xl sm:text-[28px] md:text-[32px] text-[#111827]"> &gt; </span>
         <span className="text-lg sm:text-xl md:text-[24px] text-[#111827]">
-          Welcome Back <span className="text-[#6366F1] font-semibold">"Sidhu"</span> 👋
+          Welcome Back <span className="text-[#6366F1] font-semibold">"Subu"</span> 👋
         </span>
       </div>
 

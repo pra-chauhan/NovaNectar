@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useEmployees } from "../../context.jsx/EmployeeContext";
+import { useEmployee } from "../../context.jsx/EmployeeContext";
 
 const AddEditEmployeeModal = ({ isOpen, onClose, initialData }) => {
-    const { addEmployee, updateEmployee } = useEmployees();
+    const { addEmployee, updateEmployee } = useEmployee();
 
     const [formData, setFormData] = useState({
         fullName: '',

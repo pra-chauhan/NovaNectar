@@ -95,4 +95,3 @@ const EventsMeetings = () => {
 };
 
 export default EventsMeetings;
-

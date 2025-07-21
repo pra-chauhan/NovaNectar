@@ -14,8 +14,12 @@
     "@tailwindcss/vite": "^4.1.11",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+<<<<<<< HEAD
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.3",
+=======
+    "datepicker": "^0.0.0",
+>>>>>>> 0c1a04ba4ebc16048d822d476665a21154614216
     "jspdf": "^3.0.1",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",

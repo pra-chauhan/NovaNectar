@@ -10,6 +10,8 @@ const PerformanceModal = ({ isOpen, onClose, onSave, initialData, employee }) =>
         notes: "",
     });
 
+    
+
     useEffect(() => {
         if (initialData) {
             setPerformance({
