@@ -5,12 +5,12 @@ import { BsExclamationCircle } from "react-icons/bs";
 import logo from "../../assets/logoo.png";
 import EmailPopupModal from "../EmployeePageComponent/EmailPopupModal";
 import NotificationPopupModal from "../EmployeePageComponent/NotificationBell"; 
-import SettingsPopupModal from "../EmployeePageComponent/EmployeeSettingsModal";
+// import SettingsPopupModal from "../EmployeePageComponent/EmployeeSettingsModal";
 
 const TopbarEmployee = ({ onMenuClick }) => {
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
-  const [showSettingsPopup, setShowSettingsPopup] = useState(false);
+  // const [showSettingsPopup, setShowSettingsPopup] = useState(false);
 
   const toggleEmailPopup = () => {
     setShowEmailPopup((prev) => !prev);
@@ -20,9 +20,9 @@ const TopbarEmployee = ({ onMenuClick }) => {
     setShowNotificationPopup((prev) => !prev);
   };
 
-  const toggleSettingsPopup = () => {
-    setShowSettingsPopup((prev) => !prev);
-    };
+  // const toggleSettingsPopup = () => {
+  //   setShowSettingsPopup((prev) => !prev);
+  //   };
 
   return (
     <div className="w-full h-[76px] flex items-center justify-between px-4 md:px-8 border-b-2 border-[#8D9096] bg-white sticky top-0 z-50">
@@ -76,13 +76,13 @@ const TopbarEmployee = ({ onMenuClick }) => {
         </button>
 
         {/* Settings */}
-        <button
+        {/* <button
           onClick={toggleSettingsPopup}
           className="text-gray-600 hover:text-blue-600 focus:outline-none"
         >
           <FiSettings className="text-xl" />
           
-        </button>
+        </button> */}
 
         {/* Profile Circle */}
         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white text-sm">
@@ -102,10 +102,10 @@ const TopbarEmployee = ({ onMenuClick }) => {
         />
 
         {/* Setttings */}
-        <SettingsPopupModal
+        {/* <SettingsPopupModal
         isOpen={showSettingsPopup}
         onClose={() => setShowSettingsPopup(false)}
-        />
+        /> */}
       </div>
     </div>
   );
