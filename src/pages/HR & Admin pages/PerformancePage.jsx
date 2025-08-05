@@ -4,6 +4,7 @@ import { useEmployee } from "../../context.jsx/EmployeeContext";
 import PerformanceTable from "../../components/Performance/PerformanceTable";
 import PerformanceCardView from "../../components/Performance/EmployeePerformanceCards";
 import PerformanceModal from "../../components/Performance/EvaluateModal";
+import { useAuth } from "../../context.jsx/AuthContext";
 
 const PerformancePage = () => {
   const { employees, updateEmployeePerformance } = useEmployee();
@@ -13,19 +14,26 @@ const PerformancePage = () => {
   const [sort, setSort] = useState("highest");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const { user } = useAuth();
 
   const handleEvaluate = (employee) => {
+    console.log("Evaluating employee:", employee);
     setSelectedEmployee(employee);
     setIsModalOpen(true);
   };
 
-  const handleSavePerformance = (employeeId, performanceData) => {
-    updateEmployeePerformance(employeeId, {
-      ...performanceData,
-    });
-    setIsModalOpen(false);
-    setSelectedEmployee(null);
-  };
+// Replace with actual evaluator logic if needed
+console.log(user._id, "user")
+
+ const handleSavePerformance = (employeeId, performanceData) => {
+  updateEmployeePerformance(employeeId, {
+    ...performanceData,
+     evaluator: user._id,
+  });
+  
+  setIsModalOpen(false);
+  setSelectedEmployee(null);
+};
 
   const filteredEmployees = employees
     .filter(emp =>
@@ -144,6 +152,8 @@ const PerformancePage = () => {
         onSave={handleSavePerformance}
         initialData={selectedEmployee?.performance || null}
         employee={selectedEmployee}
+        evaluatorId={user?._id}
+        
       />
     </div>
   );

@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   Users,
   Network,
   Calendar,
   EllipsisVertical
 } from "lucide-react";
+import api from "../../context.jsx/api";
+import { useAuth } from "../../context.jsx/AuthContext";
 
-const EmployeeTable = ({ employees }) => {
+const EmployeeTable = () => {
+
+  const {user}= useAuth();
+
+  const role = user?.user?.role || user?.role;
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Manage Employees");
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const tabs = [
     { label: "Manage Employees", icon: <Users size={16} /> },
@@ -17,11 +28,33 @@ const EmployeeTable = ({ employees }) => {
     { label: "Birthday/ Anniversary", icon: <Calendar size={16} /> }
   ];
 
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await api.get(`/${role}/getEmployeesList`); 
+        setEmployees(res.data.data || res.data.employees || []);
+      } catch (err) {
+        console.error("Failed to fetch employees:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  const filteredEmployees = employees.filter((emp) =>
+    (emp.name || emp.fullName || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) {
+    return <div className="p-6 text-center">Loading employees...</div>;
+  }
+
   return (
     <div className="p-4 sm:p-6 bg-white rounded-xl shadow w-full">
-      {/* Tabs + Search Bar */}
+      {/* Tabs + Search */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
-        {/* Tabs with Icons */}
         <div className="flex flex-wrap gap-6">
           {tabs.map((tab, index) => (
             <button
@@ -39,11 +72,13 @@ const EmployeeTable = ({ employees }) => {
           ))}
         </div>
 
-        {/* Search + Filter */}
+        {/* Search bar */}
         <div className="flex gap-2 w-full md:w-auto">
           <input
             type="text"
             placeholder="Search Keywords...."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-1 text-sm w-full md:w-64 focus:ring-1 focus:ring-[#7B61FF] outline-none"
           />
           <button className="border border-gray-300 rounded-md px-3 py-1 text-sm hover:bg-gray-100 transition">
@@ -52,10 +87,12 @@ const EmployeeTable = ({ employees }) => {
         </div>
       </div>
 
-      {/* Section Heading */}
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">Managing Employee</h2>
+      {/* Table heading */}
+      <h2 className="text-lg font-semibold text-gray-800 mb-3">
+        Managing Employee
+      </h2>
 
-      {/* Table for Manage Employees */}
+      {/* Table */}
       {activeTab === "Manage Employees" ? (
         <>
           <div className="overflow-x-auto border border-gray-200 rounded-lg">
@@ -76,52 +113,41 @@ const EmployeeTable = ({ employees }) => {
                 </tr>
               </thead>
               <tbody>
-                {employees.map((emp, index) => (
+                {filteredEmployees.map((emp, index) => (
                   <tr key={index} className="border-t hover:bg-gray-50">
                     <td className="p-3 text-[#7B61FF] underline whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <input type="checkbox" />
                         <span
                           className="cursor-pointer"
-                          onClick={() =>
-                            navigate(`/employees/${emp.id}`, {
-                              state: { employee: emp }
-                            })
-                          }
+                          onClick={() => navigate(`/employees/${emp._id}`)}
                         >
                           {emp.id}
                         </span>
                       </div>
                     </td>
-<td className="p-3 whitespace-nowrap">{emp.fullName || emp.name || "-"}</td>
-                    <td className="p-3 whitespace-nowrap">{emp.phone}</td>
-                    <td className="p-3 whitespace-nowrap">{emp.position}</td>
-                    <td className="p-3 font-semibold whitespace-nowrap">
-                      {emp.attendance || "97%"}
-                    </td>
-                
-                    <td className="p-3 whitespace-nowrap">{emp.type}
-                      Work From Home
-                    </td>
                     <td className="p-3 whitespace-nowrap">
-                     <span
-  className={`px-2 py-1 rounded-full text-xs font-medium ${
-    (emp.status || "Active") === "Active"
-      ? "bg-green-100 text-green-700"
-      : "bg-gray-200 text-gray-700"
-  }`}
->
-  {emp.status || "Active"}
-</span>
-
+                      {emp.fullName || emp.name || "-"}
+                    </td>
+                    <td className="p-3 whitespace-nowrap">{emp.contact || emp.phone || "-"}</td>
+                    <td className="p-3 whitespace-nowrap">{emp.jobRole || emp.position || "-"}</td>
+                    <td className="p-3 font-semibold whitespace-nowrap">
+                      {emp.attendance || "N/A"}
+                    </td>
+                    <td className="p-3 whitespace-nowrap">{emp.type || "Work From Home"}</td>
+                    <td className="p-3 whitespace-nowrap">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          emp.status === "Active"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        {emp.status || "Inactive"}
+                      </span>
                     </td>
                     <td className="p-3 text-right whitespace-nowrap">
-                      <button
-                        onClick={() =>
-                         navigate(`/employees/${emp.id}`)
-
-                        }
-                      >
+                      <button onClick={() => navigate(`/employees/${emp.id}`)}>
                         <EllipsisVertical
                           size={18}
                           className="text-gray-500 hover:text-gray-700"
@@ -134,10 +160,10 @@ const EmployeeTable = ({ employees }) => {
             </table>
           </div>
 
-          {/* Pagination */}
+          {/* Pagination placeholder */}
           <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-sm text-gray-600 gap-2">
             <div>
-              Showing 1 to {employees.length} of {employees.length} entries
+              Showing 1 to {filteredEmployees.length} of {filteredEmployees.length} entries
             </div>
             <div className="flex items-center gap-2">
               <button className="border border-gray-300 px-2 py-1 rounded hover:bg-gray-100">

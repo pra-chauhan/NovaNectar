@@ -71,15 +71,15 @@ const AddEditEmployeeModal = ({ isOpen, onClose, initialData }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         if (initialData && initialData.id) {
-            // Update existing employee
+           
             updateEmployee({ ...formData, id: initialData.id });
         } else {
-            // Add new employee with a unique id
+            
             const newEmployee = { ...formData, id: Date.now().toString() };
-            addEmployee(newEmployee);
+            await addEmployee(newEmployee);
         }
         onClose();
     };
@@ -155,12 +155,12 @@ const AddEditEmployeeModal = ({ isOpen, onClose, initialData }) => {
                     <h3 className="font-semibold text-lg text-gray-800">Upload Documents (PNG only)*</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[
-                            { label: 'Identity Proof', name: 'identityProof' },
-                            { label: 'Employee Image', name: 'employeeImage' },
-                            { label: '10th Certificate', name: 'tenthCertificate' },
-                            { label: '12th Certificate', name: 'twelfthCertificate' },
-                            { label: 'Graduation Certificate', name: 'graduationCertificate' },
-                            { label: 'Experience Certificate', name: 'experienceCertificate' },
+                            { label: 'Identity Proof', name: 'empIdProof' },
+                            { label: 'Employee Image', name: 'empPhoto' },
+                            { label: '10th Certificate', name: 'emp10PassCert' },
+                            { label: '12th Certificate', name: 'emp12PassCert' },
+                            { label: 'Graduation Certificate', name: 'empGradCert' },
+                            { label: 'Experience Certificate', name: 'empExpCert' },
                         ].map(doc => (
                             <div key={doc.name}>
                                 <label className="block text-sm font-medium mb-1 text-gray-700">

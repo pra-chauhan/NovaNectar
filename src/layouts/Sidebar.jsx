@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
+import { useAuth } from "../context.jsx/AuthContext";
 
 const menuItems = [
   { label: "Dashboard", icon: <MdDashboard />, path: "/dashboard" },
@@ -21,9 +22,13 @@ const menuItems = [
 ];
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const { logout } = useAuth();
+  
   const navigate = useNavigate();
+  
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
+    await logout();
     localStorage.removeItem("token");
     sessionStorage.clear();
     navigate("/login");

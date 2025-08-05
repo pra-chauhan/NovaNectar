@@ -39,6 +39,7 @@ const NotificationPopupModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("All");
 
   if (!isOpen) return null;
+  
 
   return (
     <div className="absolute right-0 top-16 mt-2 w-96 bg-white border border-gray-200 shadow-xl rounded-2xl z-50 overflow-hidden">

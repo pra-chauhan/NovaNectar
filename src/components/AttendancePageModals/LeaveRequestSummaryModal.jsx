@@ -19,19 +19,19 @@ const LeaveRequestSummaryModal = ({ data, isOpen, onApprove, onReject }) => {
         {/* Summary Details */}
         <div className="text-sm sm:text-base space-y-2">
           <p>
-            <strong>Employee Name:</strong> {data.name}
+            <strong>Employee Name:</strong> {data.fullName}
           </p>
           <p>
-            <strong>Leave Type:</strong> {data.type}
+            <strong>Leave Type:</strong> {data.leaveType}
           </p>
           <p>
             <strong>Period:</strong> {data.startDate} to {data.endDate}
           </p>
           <p>
-            <strong>Reason:</strong> {data.notes1}
+            <strong>Reason:</strong> {data.reason}
           </p>
           <p>
-            <strong>Comment:</strong> {data.notes2}
+            <strong>Comment:</strong> {data.comment}
           </p>
         </div>
 

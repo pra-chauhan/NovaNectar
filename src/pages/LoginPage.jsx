@@ -1,27 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoimg from "../assets/logo.png";
+import { useAuth } from "../context.jsx/AuthContext";
 
 export default function LoginPage() {
-  const [selectedRole, setSelectedRole] = useState("");
+  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const { login } = useAuth();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (selectedRole === "Employee") {
-      navigate("/employee/profile");
-    } else if (selectedRole === "HR") {
-      navigate("/dashboard");
-    } else if (selectedRole === "Admin") {
-      navigate("/dashbord");
+    setError(null);
+    try {
+      await login(email, password, role);
+      if (role === "Employee") { 
+        navigate("/employee/profile");
+      } else if (role === "HR") {
+        navigate("/dashboard");
+      } else if (role === "Admin") {
+        navigate("/dashboard");
+      }
+
+
+      console.log(login, "login")
+    } catch (err) {
+      alert("Login failed");
+      setError(err.response?.data?.message || err.message);
     }
   };
 
   const handleBack = () => {
-    setSelectedRole("");
+    setRole("");
     setEmail("");
     setPassword("");
   };
@@ -33,18 +47,21 @@ export default function LoginPage() {
         <div className="flex flex-col items-center">
           <img src={logoimg} alt="NovaNectar Logo" className="w-20 h-20 mb-2" />
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
-            Welcome to Nova<span className="text-blue-600">Nectar</span> HR Portal
+            Welcome to Nova<span className="text-blue-600">Nectar</span> HR
+            Portal
           </h1>
-          <p className="text-gray-500 text-sm text-center">Please select your role to continue</p>
+          <p className="text-gray-500 text-sm text-center">
+            Please select your role to continue
+          </p>
         </div>
 
         {/* Role Selection or Selected Role Card */}
-        {!selectedRole ? (
+        {!role ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {["Employee", "HR", "Admin"].map((role) => (
               <button
                 key={role}
-                onClick={() => setSelectedRole(role)}
+                onClick={() => setRole(role)}
                 className="flex flex-col items-center px-6 py-5 rounded-xl border border-gray-300 hover:bg-gray-50 transition w-full"
               >
                 <div className="w-10 h-10 mb-2 bg-gray-200 rounded-full flex items-center justify-center text-lg">
@@ -65,9 +82,9 @@ export default function LoginPage() {
               <div className="w-10 h-10 mb-2 bg-gray-200 rounded-full flex items-center justify-center text-lg">
                 👤
               </div>
-              <span className="font-semibold text-base">{selectedRole}</span>
+              <span className="font-semibold text-base">{role}</span>
               <span className="text-xs text-gray-500 mt-1">
-                {selectedRole === "Employee"
+                {role === "Employee"
                   ? "View attendance, payslips, and leave requests"
                   : "Manage teams, payroll, and performance"}
               </span>
@@ -76,20 +93,23 @@ export default function LoginPage() {
         )}
 
         {/* Login Form */}
-        {selectedRole && (
+        {role && (
           <form
             onSubmit={handleLogin}
             className="space-y-5 max-w-xl mx-auto animate-fade-in"
           >
             <h2 className="text-xl sm:text-2xl font-semibold text-center text-gray-800">
-              Login as {selectedRole}
+              Login as {role}
             </h2>
             <p className="text-center text-sm text-gray-500 mb-2">
-              Enter your credentials to access your {selectedRole.toLowerCase()} dashboard
+              Enter your credentials to access your {role}{" "}
+              dashboard
             </p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
               <input
                 type="email"
                 required
@@ -102,7 +122,9 @@ export default function LoginPage() {
 
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
                 <a href="#" className="text-xs text-gray-500 hover:underline">
                   Forgot password?
                 </a>
@@ -143,9 +165,10 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full sm:w-auto px-6 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
               >
-                Login as {selectedRole}
+                Login as {role}
               </button>
             </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </form>
         )}
       </div>

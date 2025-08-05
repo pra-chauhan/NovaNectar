@@ -8,14 +8,18 @@ const EventDetailModal = ({ event, onClose, onDelete }) => {
       <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
         <h2 className="text-xl font-semibold mb-4">{event.title}</h2>
         <p className="text-sm text-gray-600 mb-2">
-          <strong>Type:</strong> {event.type}
+          <strong>Type: </strong>{event.type?.name || event.type}
+        </p>
+         <p className="text-sm text-gray-600 mb-2">
+            <strong>Date:</strong>  {new Date(event.date).toLocaleDateString()}
+          </p>
+        <p className="text-sm text-gray-600 mb-2">
+          <strong>Start:</strong> {event.startTime}
         </p>
         <p className="text-sm text-gray-600 mb-2">
-          <strong>Start:</strong> {new Date(event.startDate).toLocaleString()}
+          <strong>End:</strong> {event.endTime}
         </p>
-        <p className="text-sm text-gray-600 mb-2">
-          <strong>End:</strong> {new Date(event.endDate).toLocaleString()}
-        </p>
+       
         {event.description && (
           <p className="text-sm text-gray-600 mb-4">
             <strong>Description:</strong> {event.description}

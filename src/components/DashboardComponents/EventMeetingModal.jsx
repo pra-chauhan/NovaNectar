@@ -1,49 +1,89 @@
 import React, { useState, useEffect } from "react";
+import api from "../../context.jsx/api";
+import { useAuth } from "../../context.jsx/AuthContext";
+import { getAccessToken } from "../../context.jsx/tokenService";
 
 const EventMeetingModal = ({ isOpen, onClose, onAdd }) => {
+  const { user } = useAuth();
+  const role = user?.user?.role || user?.role;
+
   const [formData, setFormData] = useState({
-    title: "",
+    name: "",
     type: "Event",
-    startDate: "",
-    endDate: "",
+    date: "",
+    startTime: "",
+    endTime: "",
     description: "",
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
-      setFormData({
-        title: "",
-        type: "Event",
-        startDate: "",
-        endDate: "",
-        description: "",
-      });
-      setError("");
-    }
+    if (!isOpen) resetForm();
   }, [isOpen]);
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      type: "Event",
+      date: "",
+      startTime: "",
+      endTime: "",
+      description: "",
+    });
+    setError("");
+    setLoading(false);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    const { title, startDate, endDate } = formData;
+  const handleSubmit = async () => {
+    const { name, type, date, startTime, endTime, description } = formData;
 
-    if (!title || !startDate || !endDate) {
+    if (!name.trim() || !date || !startTime || !endTime) {
       setError("Please fill in all required fields.");
       return;
     }
 
-    if (new Date(startDate) > new Date(endDate)) {
-      setError("End date/time must be after start date/time.");
+    if (startTime >= endTime) {
+      setError("End time must be after start time.");
       return;
     }
 
-    onAdd(formData);
-    onClose();
+    try {
+      setLoading(true);
+      setError("");
+
+      const payload = {
+        name: name.trim(),
+        type,
+        date,
+        startTime,
+        endTime,
+        description: description || "",
+      };
+
+      const res = await api.post(`/${role}/Meeting`, payload, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      onAdd?.(res.data.meeting || res.data);
+      resetForm();
+      onClose();
+    } catch (err) {
+      const message =
+        err.response?.data?.message || err.message || "Something went wrong.";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -66,11 +106,12 @@ const EventMeetingModal = ({ isOpen, onClose, onAdd }) => {
           </label>
           <input
             type="text"
-            name="title"
-            value={formData.title}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             placeholder="Enter title"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            disabled={loading}
           />
         </div>
 
@@ -81,38 +122,56 @@ const EventMeetingModal = ({ isOpen, onClose, onAdd }) => {
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            disabled={loading}
           >
             <option value="Event">Event</option>
             <option value="Meeting">Meeting</option>
           </select>
         </div>
 
-        {/* Start Date & Time */}
+        {/* Date */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
-            Start Date & Time <span className="text-red-500">*</span>
+            Date <span className="text-red-500">*</span>
           </label>
           <input
-            type="datetime-local"
-            name="startDate"
-            value={formData.startDate}
+            type="date"
+            name="date"
+            value={formData.date}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            disabled={loading}
           />
         </div>
 
-        {/* End Date & Time */}
+        {/* Start Time */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
-            End Date & Time <span className="text-red-500">*</span>
+            Start Time <span className="text-red-500">*</span>
           </label>
           <input
-            type="datetime-local"
-            name="endDate"
-            value={formData.endDate}
+            type="time"
+            name="startTime"
+            value={formData.startTime}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            disabled={loading}
+          />
+        </div>
+
+        {/* End Time */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1">
+            End Time <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="time"
+            name="endTime"
+            value={formData.endTime}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            disabled={loading}
           />
         </div>
 
@@ -125,23 +184,29 @@ const EventMeetingModal = ({ isOpen, onClose, onAdd }) => {
             onChange={handleChange}
             rows={3}
             placeholder="Add description..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+            disabled={loading}
           />
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end space-x-4 mt-6">
           <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 transition"
+            onClick={() => {
+              resetForm();
+              onClose();
+            }}
+            disabled={loading}
+            className="px-4 py-2 rounded-md border border-gray-400 text-gray-700 hover:bg-gray-100 disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+            disabled={loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            Add
+            {loading ? "Adding..." : "Add"}
           </button>
         </div>
       </div>

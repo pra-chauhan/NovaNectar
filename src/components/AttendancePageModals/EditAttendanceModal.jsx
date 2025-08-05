@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const EditAttendanceModal = ({ isOpen, onClose, employee }) => {
   const [formData, setFormData] = useState({
     date: "2025-04-25",
-    status: "Present",
+    status: "",
     punchIn: "",
     punchOut: "",
     locationType: "",
@@ -28,7 +28,8 @@ const EditAttendanceModal = ({ isOpen, onClose, employee }) => {
       <div className="bg-white rounded-xl w-full max-w-lg p-5 sm:p-6 md:p-8 space-y-5 shadow-lg overflow-y-auto max-h-[90vh]">
         {/* Title */}
         <h3 className="text-lg md:text-xl font-semibold text-gray-800 text-center sm:text-left">
-          ✏️ Edit Attendance – <span className="text-blue-600">{employee.name}</span>
+          ✏️ Edit Attendance –{" "}
+          <span className="text-blue-600">{employee.name}</span>
         </h3>
 
         {/* Form */}
@@ -46,24 +47,29 @@ const EditAttendanceModal = ({ isOpen, onClose, employee }) => {
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium mb-1">Attendance Status</label>
+            <label className="block text-sm font-medium mb-1">
+              Attendance Status
+            </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
               className="w-full px-4 py-2 rounded border text-sm"
             >
-              <option>Present</option>
-              <option>Absent</option>
-              <option>WFH</option>
-              <option>On leave</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Late">Late</option>
+              <option value="Work From Home">WFH</option>
+              <option value="on leave">On leave</option>
             </select>
           </div>
 
           {/* Punch Times */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Punch-In Time</label>
+              <label className="block text-sm font-medium mb-1">
+                Punch-In Time
+              </label>
               <input
                 type="time"
                 name="punchIn"
@@ -73,7 +79,9 @@ const EditAttendanceModal = ({ isOpen, onClose, employee }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Punch-Out Time</label>
+              <label className="block text-sm font-medium mb-1">
+                Punch-Out Time
+              </label>
               <input
                 type="time"
                 name="punchOut"
@@ -86,7 +94,9 @@ const EditAttendanceModal = ({ isOpen, onClose, employee }) => {
 
           {/* Location Type */}
           <div>
-            <label className="block text-sm font-medium mb-1">Location Type</label>
+            <label className="block text-sm font-medium mb-1">
+              Location Type
+            </label>
             <select
               name="locationType"
               value={formData.locationType}

@@ -1,18 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-
-const data = [
-  { name: "Software Engineer", value: 30 },
-  { name: "UI/UX Designer", value: 25 },
-  { name: "Data Analyst", value: 15 },
-  { name: "Project Manager", value: 13 },
-  { name: "IT Sales", value: 8 },
-];
+import { getAccessToken } from "../../context.jsx/tokenService";
+import api from "../../context.jsx/api";
+import { useAuth } from "../../context.jsx/AuthContext";
 
 const COLORS = ["#4648AB", "#5A5DDB", "#6366F1", "#9698F6", "#B7B9F9"];
 
 const TotalEmployees = () => {
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const { user } = useAuth();
+  const role = user?.user?.role || user?.role;
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await api.get(`${role}/dashboard/employee-count`, {
+          headers: {
+            Authorization: `Bearer ${getAccessToken()}`,
+          },
+        });
+
+        const responseData = res.data;
+
+        const positions = responseData.positions || [];
+
+        
+
+        const transformed = positions.map((item) => ({
+          name: item.position?.name || item.position || "Unknown",
+          value: item.count,
+        }));
+
+        setData(transformed);
+        setTotal(responseData.total || 0);
+      } catch (error) {
+        console.error("Failed to fetch employee position data:", error);
+      }
+    };
+
+    fetchData();
+  }, [role]);
 
   return (
     <div className="w-full max-w-[262px] h-auto rounded-[16px] border border-gray-300 bg-white shadow px-5 py-4 flex flex-col gap-4 items-center">

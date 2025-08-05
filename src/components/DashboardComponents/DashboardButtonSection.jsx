@@ -1,7 +1,12 @@
 import React from "react";
 import { FaCalendarAlt } from "react-icons/fa";
+import { useAuth } from "../../context.jsx/AuthContext";
 
 const DashboardButtonSection = () => {
+
+  const{user} = useAuth();
+  
+
   return (
     <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-6 py-4 gap-4">
       
@@ -12,7 +17,7 @@ const DashboardButtonSection = () => {
         </span>
         <span className="text-2xl sm:text-[28px] md:text-[32px] text-[#111827]"> &gt; </span>
         <span className="text-lg sm:text-xl md:text-[24px] text-[#111827]">
-          Welcome Back <span className="text-[#6366F1] font-semibold">"Subu"</span> 👋
+          Welcome Back <span className="text-[#6366F1] font-semibold"> {user.email}</span> 👋
         </span>
       </div>
 

@@ -1,31 +1,71 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Calendar } from "lucide-react";
-
-
 import EventMeetingModal from "./EventMeetingModal";
 import EventDetailModal from "./EventDetailModal";
+import { useAuth } from "../../context.jsx/AuthContext";
+import api from "../../context.jsx/api";
+import { getAccessToken } from "../../context.jsx/tokenService";
 
 const EventsMeetings = () => {
+
+
+  const { user } = useAuth();
+
+
+   const role = user?.user?.role || user?.role;
+
   const [showModal, setShowModal] = useState(false);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
-  // Auto delete expired events
-  useEffect(() => {
-    const now = new Date();
-    setEvents((prev) =>
-      prev.filter((event) => new Date(event.endDate) > now)
-    );
-  }, []);
+
+
+    useEffect(() => {
+  if (!role) return;
+
+    const fetchEvents = async () => {
+      try {
+        
+      const res = await api.get(`/${role}/allMeetings`, {
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      
+        const data = res.data?.meetings || res.data || [];
+        setEvents(data)
+      } catch (error) {
+        console.error("Failed to fetch meetings:", error);
+      }
+    };
+
+    fetchEvents();
+  }, [showModal]);
 
   const handleAddEvent = (newEvent) => {
     setEvents((prev) => [...prev, newEvent]);
   };
 
-  const handleDeleteEvent = () => {
-    setEvents((prev) => prev.filter((e) => e !== selectedEvent));
+  // const handleDeleteEvent = () => {
+  //   setEvents((prev) => prev.filter((e) => e !== selectedEvent));
+  //   setSelectedEvent(null);
+  // };
+  
+const handleDeleteEvent = async () => {
+  if (!selectedEvent) return;
+
+  try {
+    await api.delete(`${role}/deleteMeting/${selectedEvent._id}`);
+
+    setEvents((prev) => prev.filter((e) => e._id !== selectedEvent._id));
     setSelectedEvent(null);
-  };
+  } catch (error) {
+    console.error("Failed to delete event:", error);
+    alert("Error deleting the meeting. Please try again.");
+  }
+};
 
   return (
     <div className="w-full rounded-2xl border border-gray-300 bg-white p-4 shadow-sm flex flex-col gap-6">
@@ -54,20 +94,17 @@ const EventsMeetings = () => {
                 <Calendar className="w-5 h-5 text-gray-500" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-gray-900">{event.title}</span>
-                <span className="text-xs text-gray-500">{event.type}</span>
+                <span className="text-sm font-medium text-gray-900">{event.name}</span>
+                <span className="text-xs text-gray-500">{event.type?.name || event.type}</span>
               </div>
             </div>
 
             <div className="flex flex-col text-right">
               <span className="text-sm font-medium text-gray-900">
-                {new Date(event.startDate).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+                {event.startTime} - {event.endTime}
               </span>
               <span className="text-xs text-gray-500">
-                {new Date(event.startDate).toLocaleDateString()}
+                {new Date(event.date).toLocaleDateString()}
               </span>
             </div>
           </div>

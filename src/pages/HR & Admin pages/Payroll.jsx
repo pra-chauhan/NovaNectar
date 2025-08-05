@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 // import html2pdf from "html2pdf.js";
 import { Calendar, Search, ChevronDown, Printer } from "lucide-react";
 import DatePicker from "react-datepicker";
@@ -8,12 +8,8 @@ import Vecto from "../../assets/Vector1.png";
 import icon from "../../assets/icon-park-outline_left.png";
 import iconPark from "../../assets/icon-park-outline_left1.png";
 
-
-
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-
-
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 import jam from "../../assets/jam_share.png";
 import Vector from "../../assets/Vector2.png";
@@ -22,6 +18,8 @@ import Frame457 from "../../assets/Frame457.png";
 import frame from "../../assets/frame.png";
 import Frame458 from "../../assets/Frame458.png";
 import Frame4581 from "../../assets/Frame4581.png";
+import { useAuth } from "../../context.jsx/AuthContext";
+import api from "../../context.jsx/api";
 
 const employees = [
   {
@@ -37,7 +35,7 @@ const employees = [
     status: "Pay",
   },
   {
-    id:2,
+    id: 2,
     name: "Amit ",
     title: "Senior web Designer",
     invoice: "#234786",
@@ -57,7 +55,7 @@ const getStatusClass = (status) => {
 };
 
 function Payroll() {
-    const payslipRef = useRef(null);
+  const payslipRef = useRef(null);
 
   const [selectedDate, setSelectedDate] = useState(new Date("2025-05-03"));
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,6 +65,46 @@ function Payroll() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [employees, setEmployees] = useState([]);
+
+  const { user } = useAuth();
+
+  const role = user?.user?.role || user?.role;
+
+  const fetchPayrollData = async () => {
+    try {
+      const month = new Date().getMonth() + 1; // August is 8
+      const year = new Date().getFullYear();
+
+      const { data } = await api.get(
+        `/${role}/payroll/generate?month=${month}&year=${year}`
+      );
+
+      const formatted = data.data.map((emp) => ({
+        name: emp.employeeName,
+        title: emp.designation,
+        invoice: emp.invoiceId,
+        attendance: {
+          P: emp.attendance.present,
+          A: emp.attendance.absent,
+          L: emp.attendance.leave,
+        },
+        salary: emp.basicSalary,
+        allowance: emp.allowances,
+        deduction: emp.deductions,
+        net: emp.netAmount,
+        status: emp.status,
+      }));
+
+      setEmployees(formatted);
+    } catch (error) {
+      console.error("Failed to fetch payroll:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPayrollData();
+  }, []);
 
   const itemsPerPage = 8;
 
@@ -88,89 +126,57 @@ function Payroll() {
     setCurrentPage(pageNum);
   };
 
-  
-
-
   const handleDownloadFromCard = (emp) => {
     setSelectedEmployee(emp);
 
-    
     setTimeout(() => {
       handleDownloadPDF(emp);
     }, 500);
   };
 
-
-//   const element = payslipRef.current;
-//   if (!element) {
-//     console.warn('Payslip element missing');
-//     return;
-//   }
-
-//   try {
-//     const canvas = await html2canvas(element, {
-//       scale: 4,
-//       backgroundColor: '#fff',
-//       useCORS: true,
-//     });
-//     const imgData = canvas.toDataURL('image/png');
-
-//     const pdf = new jsPDF('p', 'mm', 'a4');
-//     const pdfWidth = pdf.internal.pageSize.getWidth();
-//     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-//     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-//     pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
-//   } catch (error) {
-//     console.error('Failed to generate PDF:', error);
-//   }
-// };
-
-const handleDownloadPDF = async () => {
-  if (!payslipRef.current || !selectedEmployee) {
-    console.error("Payslip element or selected employee is missing");
-    return;
-  }
-
-  try {
-    const element = payslipRef.current;
-
-    // Get canvas from DOM
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let position = 0;
-
-    // If content is longer than 1 page
-    if (imgHeight > pageHeight) {
-      while (position < imgHeight) {
-        pdf.addImage(imgData, 'PNG', 0, -position, imgWidth, imgHeight);
-        position += pageHeight;
-        if (position < imgHeight) pdf.addPage();
-      }
-    } else {
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+  const handleDownloadPDF = async () => {
+    if (!payslipRef.current || !selectedEmployee) {
+      console.error("Payslip element or selected employee is missing");
+      return;
     }
 
-    pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
-  } catch (error) {
-    console.error('Failed to generate PDF:', error);
-  }
-};
+    try {
+      const element = payslipRef.current;
 
+      // Get canvas from DOM
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      });
 
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let position = 0;
+
+      // If content is longer than 1 page
+      if (imgHeight > pageHeight) {
+        while (position < imgHeight) {
+          pdf.addImage(imgData, "PNG", 0, -position, imgWidth, imgHeight);
+          position += pageHeight;
+          if (position < imgHeight) pdf.addPage();
+        }
+      } else {
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      }
+
+      pdf.save(`Payslip-${selectedEmployee.name}.pdf`);
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
+  };
 
   return (
     <>
@@ -601,67 +607,69 @@ const handleDownloadPDF = async () => {
         {active === "one" && (
           <div className=" bg-white rounded-xl shadow border border-gray-200">
             <div className="overflow-x-auto">
-            <table className="min-w-full text-sm text-left ">
-              <thead className="bg-gray-50 text-gray-700 font-semibold">
-                <tr>
-                  <th className="px-4 py-3">Employees</th>
-                  <th className="px-4 py-3">Invoice ID</th>
-                  <th className="px-4 py-3">Attendance</th>
-                  <th className="px-4 py-3">Basic Salary</th>
-                  <th className="px-4 py-3">Allowances</th>
-                  <th className="px-4 py-3">Deductions</th>
-                  <th className="px-4 py-3">Net Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((emp, idx) => (
-                  <tr key={idx} className="border-t border-gray-100">
-                    <td className="px-4 py-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gray-200" />
-                      <div>
-                        <p className="font-medium text-gray-900">{emp.name}</p>
-                        <p className="text-xs text-gray-500">{emp.title}</p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">{emp.invoice}</td>
-                    <td className="px-4 py-3 flex gap-2">
-                      <span className="text-green-700 text-xs bg-green-100 px-2 py-0.5 rounded">
-                        P:{emp.attendance.P}
-                      </span>
-                      <span className="text-red-600 text-xs bg-red-100 px-2 py-0.5 rounded">
-                        A:{emp.attendance.A}
-                      </span>
-                      <span className="text-blue-700 text-xs bg-blue-100 px-2 py-0.5 rounded">
-                        L:{emp.attendance.L}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">{emp.salary}</td>
-                    <td className="px-4 py-3">{emp.allowance}</td>
-                    <td className="px-4 py-3">{emp.deduction}</td>
-                    <td className="px-4 py-3 font-semibold">{emp.net}</td>
-                    <td className="px-4 py-3">
-                      <button
-                        className={`text-xs px-3 py-1 rounded-full ${getStatusClass(
-                          emp.status
-                        )}`}
-                      >
-                        {emp.status}
-                      </button>
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => setSelectedEmployee(emp)}
-                        className="flex items-center gap-1 text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
-                      >
-                        <FiFileText size={16} /> View
-                      </button>
-                    </td>
+              <table className="min-w-full text-sm text-left ">
+                <thead className="bg-gray-50 text-gray-700 font-semibold">
+                  <tr>
+                    <th className="px-4 py-3">Employees</th>
+                    <th className="px-4 py-3">Invoice ID</th>
+                    <th className="px-4 py-3">Attendance</th>
+                    <th className="px-4 py-3">Basic Salary</th>
+                    <th className="px-4 py-3">Allowances</th>
+                    <th className="px-4 py-3">Deductions</th>
+                    <th className="px-4 py-3">Net Amount</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {employees.map((emp, idx) => (
+                    <tr key={idx} className="border-t border-gray-100">
+                      <td className="px-4 py-3 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gray-200" />
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {emp.name}
+                          </p>
+                          <p className="text-xs text-gray-500">{emp.title}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{emp.invoice}</td>
+                      <td className="px-4 py-3 flex gap-2">
+                        <span className="text-green-700 text-xs bg-green-100 px-2 py-0.5 rounded">
+                          P:{emp.attendance.P}
+                        </span>
+                        <span className="text-red-600 text-xs bg-red-100 px-2 py-0.5 rounded">
+                          A:{emp.attendance.A}
+                        </span>
+                        <span className="text-blue-700 text-xs bg-blue-100 px-2 py-0.5 rounded">
+                          L:{emp.attendance.L}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">{emp.salary}</td>
+                      <td className="px-4 py-3">{emp.allowance}</td>
+                      <td className="px-4 py-3">{emp.deduction}</td>
+                      <td className="px-4 py-3 font-semibold">{emp.net}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          className={`text-xs px-3 py-1 rounded-full ${getStatusClass(
+                            emp.status
+                          )}`}
+                        >
+                          {emp.status}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => setSelectedEmployee(emp)}
+                          className="flex items-center gap-1 text-sm text-gray-600 border border-gray-300 px-3 py-1 rounded hover:bg-gray-100"
+                        >
+                          <FiFileText size={16} /> View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -759,10 +767,14 @@ const handleDownloadPDF = async () => {
               onClick={(e) => e.stopPropagation()} // Prevent closing on inner click
             >
               {/* Paste your payslip card here */}
-              <div ref={payslipRef}  className=" payslip-container text-sm text-gray-700 font-sans"   style={{
-    color: '#374151',         
-    backgroundColor: '#fff',  
-  }}>
+              <div
+                ref={payslipRef}
+                className=" payslip-container text-sm text-gray-700 font-sans"
+                style={{
+                  color: "#374151",
+                  backgroundColor: "#fff",
+                }}
+              >
                 {/* HEADER */}
                 <div className="mb-3">
                   <h1 className="text-lg font-semibold">Employee Payslip</h1>
@@ -906,26 +918,22 @@ const handleDownloadPDF = async () => {
                 </p>
 
                 {/* BUTTONS */}
-              
               </div>
-                <div className="flex justify-between gap-3 mt-4">
-                  <button
-                   onClick={() => window.print()}
-                    className="flex items-center gap-1 px-4 py-2 border border-gray-300 rounded text-gray-700 text-sm hover:bg-gray-50"
-                  >
-                    Print
-                  </button>
-                  <button
-                    onClick={ handleDownloadPDF}
-                    
-                    className="flex items-center gap-1 px-4 py-2 border border-indigo-300 text-indigo-600 rounded text-sm hover:bg-indigo-50"
-                  >
-              
-                    Download PDF
-                  </button>
-                </div>
+              <div className="flex justify-between gap-3 mt-4">
+                <button
+                  onClick={() => window.print()}
+                  className="flex items-center gap-1 px-4 py-2 border border-gray-300 rounded text-gray-700 text-sm hover:bg-gray-50"
+                >
+                  Print
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-1 px-4 py-2 border border-indigo-300 text-indigo-600 rounded text-sm hover:bg-indigo-50"
+                >
+                  Download PDF
+                </button>
+              </div>
             </div>
-            
           </div>
         )}
 
